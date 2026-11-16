@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Морська Абетка: Підводна Експедиція</title>
+
+  <!-- Підключення Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Дружні округлі шрифти для дітей -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ocean-top: #0ea5e9;
+      --ocean-mid: #0369a1;
+      --ocean-deep: #062138;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Nunito', 'Rubik', sans-serif;
+      background: linear-gradient(180deg, #06b6d4 0%, #0284c7 30%, #0369a1 68%, #062138 100%);
+      min-height: 100vh;
+      color: #f0f9ff;
+      overflow-x: hidden;
+      margin: 0;
+    }
+
+    /* Сонячні промені з поверхні океану */
+    .sun-rays {
+      position: fixed;
+      top: -10%;
+      left: 0;
+      width: 100%;
+      height: 75vh;
+      pointer-events: none;
+      z-index: 0;
+      background: repeating-linear-gradient(
+        105deg,
+        rgba(255, 255, 255, 0.09) 0px,
+        rgba(255, 255, 255, 0.09) 38px,
+        transparent 38px,
+        transparent 105px
+      );
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+      animation: raysSway 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes raysSway {
+      0% { transform: skewX(-4deg) translateX(-14px); }
+      100% { transform: skewX(4deg) translateX(14px); }
+    }
+
+    /* Фонові бульбашки */
+    .bg-bubbles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bubble-particle {
+      position: absolute;
+      bottom: -60px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7), rgba(186, 230, 253, 0.15) 70%, rgba(255, 255, 255, 0.4));
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      animation: riseUp linear infinite;
+    }
+
+    @keyframes riseUp {
+      0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+      15% { opacity: 0.75; }
+      50% { transform: translateY(-50vh) translateX(16px) scale(1); }
+      85% { opacity: 0.5; }
+      100% { transform: translateY(-115vh) translateX(-12px) scale(1.1); opacity: 0; }
+    }
+
+    /* Об'ємні дитячі кнопки */
+    .btn-3d {
+      transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.14s ease, filter 0.14s ease;
+      box-shadow: 0 5px 0 rgba(4, 31, 51, 0.45), inset 0 2px 2px rgba(255, 255, 255, 0.45);
+    }
+
+    .btn-3d:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+
+    .btn-3d:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 rgba(4, 31, 51, 0.45), inset 0 2px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Скляна панель ілюмінатора */
+    .porthole-card {
+      background: linear-gradient(145deg, rgba(14, 116, 144, 0.62), rgba(8, 47, 73, 0.82));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 3px solid rgba(125, 211, 252, 0.42);
+      box-shadow: 0 16px 36px rgba(2, 22, 39, 0.45), inset 0 2px 8px rgba(255, 255, 255, 0.18);
+    }
+
+    /* Плавне погойдування тваринок */
+    .float-animal {
+      animation: animalFloat 3.4s ease-in-out infinite;
+    }
+
+    @keyframes animalFloat {
+      0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
+      50% { transform: translateY(-9px) rotate(1.5deg); }
+    }
+
+    /* М'яке погойдування при помилці */
+    @keyframes gentleWobble {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px) rotate(-3deg); }
+      40% { transform: translateX(8px) rotate(3deg); }
+      60% { transform: translateX(-5px) rotate(-2deg); }
+      80% { transform: translateX(5px) rotate(2deg); }
+    }
+
+    .animate-wobble {
+      animation: gentleWobble 0.5s ease-in-out;
+    }
+
+    /* Святковий підстриб */
+    @keyframes popCelebrate {
+      0% { transform: scale(0.72); }
+      50% { transform: scale(1.16); }
+      75% { transform: scale(0.96); }
+      100% { transform: scale(1); }
+    }
+
+    .animate-pop {
+      animation: popCelebrate 0.48s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Пульсація підказки */
+    @keyframes hintPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.85); }
+      50% { transform: scale(1.1); box-shadow: 0 0 0 14px rgba(250, 204, 21, 0); }
+    }
+
+    .hint-glow {
+      animation: hintPulse 1.1s infinite;
+      border-color: #fde047 !important;
+      background: linear-gradient(180deg, #fef08a 0%, #eab308 100%) !important;
+      color: #422006 !important;
+    }
+
+    /* Індикатор активної озвучки */
+    @keyframes speakingWave {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .speaking-active {
+      animation: speakingWave 0.7s ease-in-out infinite;
+      box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.65), 0 5px 0 rgba(4, 31, 51, 0.45) !important;
+    }
+
+    /* Смуга прокрутки */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(6, 33, 56, 0.5); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.5); border-radius: 10px; }
+  </style>
+</head>
+<body class="relative flex flex-col justify-between min-h-screen">
+
+  <!-- Сонячні промені та фонові бульбашки -->
+  <div class="sun-rays"></div>
+  <div id="bgBubbles" class="bg-bubbles"></div>
+
+  <!-- ==================== ВЕРХНЯ ПАНЕЛЬ БАТИСКАФА (ШАПКА) ==================== -->
+  <header class="relative z-20 w-full max-w-6xl mx-auto px-3 pt-3 sm:px-6 sm:pt-4">
+    <div class="porthole-card rounded-3xl px-3.5 py-3 sm:px-6 sm:py-3.5 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
+
+      <!-- Логотип та назва -->
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 flex items-center justify-center shadow-lg border-2 border-amber-100 shrink-0">
+          <svg viewBox="0 0 64 64" class="w-8 h-8 sm:w-10 sm:h-10">
+            <circle cx="32" cy="32" r="26" fill="#0284c7" stroke="#fef08a" stroke-width="5"/>
+            <circle cx="32" cy="32" r="19" fill="#38bdf8"/>
+            <path d="M20 24 Q28 16 38 22" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+            <circle cx="32" cy="9" r="2" fill="#78350f"/>
+            <circle cx="32" cy="55" r="2" fill="#78350f"/>
+            <circle cx="9" cy="32" r="2" fill="#78350f"/>
+            <circle cx="55" cy="32" r="2" fill="#78350f"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-2xl md:text-3xl font-black tracking-tight text-white drop-shadow leading-tight">
+            Морська Абетка
+          </h1>
+          <p class="text-xs sm:text-sm font-bold text-cyan-200">
+            Підводна Експедиція • <span id="explorerRank" class="text-amber-300">Юнга Океану</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Панель звуку та лічильники прогресу -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 ml-auto sm:ml-0">
+        
+        <!-- Кнопка «Перевірити звук» -->
+        <button id="testSoundBtn" onclick="testSoundAndGreet()" class="btn-3d bg-gradient-to-b from-emerald-400 to-emerald-600 text-white font-black text-xs sm:text-sm px-3 py-2 sm:px-4 sm:py-2.5 rounded-2xl border-2 border-emerald-200 flex items-center gap-1.5" title="Перевірити голос і звук">
+          <span id="soundStatusEmoji" class="text-base sm:text-lg leading-none">🔊</span>
+          <span class="hidden xs:inline sm:inline">Перевірити звук</span>
+          <span class="sm:hidden">Звук</span>
+        </button>
+
+        <!-- Кнопка «Налаштування голосу» -->
+        <button onclick="openVoiceSettings()" class="btn-3d bg-gradient-to-b from-sky-400 to-sky-600 text-white font-extrabold text-xs sm:text-sm px-2.5 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl border-2 border-sky-200/80 flex items-center gap-1.5" title="Налаштування голосу та звуків">
+          <span class="text-base sm:text-lg leading-none">⚙️</span>
+          <span class="hidden md:inline">Голос</span>
+        </button>
+
+        <!-- Лічильник перлин -->
+        <div class="flex items-center gap-1.5 bg-sky-950/75 border-2 border-pink-300/40 rounded-2xl px-2.5 py-1.5 sm:px-3.5 sm:py-2 shadow-inner" title="Зібрані перлини">
+          <svg viewBox="0 0 36 36" class="w-5 h-5 sm:w-6 sm:h-6 shrink-0">
+            <path d="M4 22 C4 12, 32 12, 32 22 C32 28, 24 32, 18 32 C12 32, 4 28, 4 22 Z" fill="#ec4899"/>
+            <circle cx="18" cy="20" r="8" fill="#fce7f3" stroke="#fbcfe8" stroke-width="1"/>
+            <circle cx="15" cy="17" r="2.2" fill="#ffffff"/>
+          </svg>
+          <span id="pearlCount" class="text-base sm:text-lg font-black text-pink-200">0</span>
+        </div>
+
+        <!-- Лічильник вивчених літер -->
+        <div class="flex items-center gap-1 bg-sky-950/75 border-2 border-amber-300/40 rounded-2xl px-2.5 py-1.5 sm:px-3.5 sm:py-2 shadow-inner" title="Вивчені літери">
+          <span class="text-base sm:text-lg">⭐</span>
+          <span class="text-sm sm:text-base font-black text-amber-200"><span id="learnedCount">0</span>/33</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Навігація: 4 головні вкладки -->
+    <nav class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mt-3">
+      <button onclick="switchTab('alphabet')" id="tab-btn-alphabet" class="tab-btn btn-3d rounded-2xl py-2.5 px-3 sm:py-3.5 sm:px-4 font-extrabold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 border-2 bg-gradient-to-b from-amber-300 to-amber-500 text-amber-950 border-amber-100">
+        <span class="text-xl sm:text-2xl">🔤</span>
+        <span>Абетка Океану</span>
+      </button>
+
+      <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="tab-btn btn-3d rounded-2xl py-2.5 px-3 sm:py-3.5 sm:px-4 font-extrabold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 border-2 bg-gradient-to-b from-sky-500 to-sky-700 text-white border-sky-300/60">
+        <span class="text-xl sm:text-2xl">🔍</span>
+        <span>Хто сховався?</span>
+      </button>
+
+      <button onclick="switchTab('builder')" id="tab-btn-builder" class="tab-btn btn-3d rounded-2xl py-2.5 px-3 sm:py-3.5 sm:px-4 font-extrabold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 border-2 bg-gradient-to-b from-sky-500 to-sky-700 text-white border-sky-300/60">
+        <span class="text-xl sm:text-2xl">🧩</span>
+        <span>Склади слово</span>
+      </button>
+
+      <button onclick="switchTab('aquarium')" id="tab-btn-aquarium" class="tab-btn btn-3d rounded-2xl py-2.5 px-3 sm:py-3.5 sm:px-4 font-extrabold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 border-2 bg-gradient-to-b from-sky-500 to-sky-700 text-white border-sky-300/60">
+        <span class="text-xl sm:text-2xl">🐠</span>
+        <span>Мій Акваріум</span>
+        <span id="aquariumBadge" class="ml-0.5 bg-pink-500 text-white text-xs font-black px-2 py-0.5 rounded-full border border-white/60">1</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ==================== ГОЛОВНИЙ РОБОЧИЙ ПРОСТІР ==================== -->
+  <main class="relative z-10 flex-1 w-full max-w-6xl mx-auto px-3 py-4 sm:px-6 sm:py-5">
+
+    <!-- ==================== ВКЛАДКА 1: АБЕТКА ОКЕАНУ ==================== -->
+    <section id="view-alphabet" class="tab-view space-y-4">
+      <div class="porthole-card rounded-3xl p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+              <span>🌊</span> Вивчаємо 33 літери української абетки
+            </h2>
+            <p class="text-sm sm:text-base text-cyan-100 font-semibold">
+              Натисни на будь-яку літеру, щоб почути її та познайомитися з морською тваринкою!
+            </p>
+          </div>
+          <!-- Колірна легенда підготовки до школи -->
+          <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm font-bold bg-sky-950/65 px-3.5 py-2 rounded-2xl border border-cyan-400/30 self-start">
+            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-rose-400 inline-block border border-white/60"></span> Голосні</span>
+            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-sky-400 inline-block border border-white/60"></span> Приголосні</span>
+            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-teal-300 inline-block border border-white/60"></span> Знак Ь</span>
+          </div>
+        </div>
+
+        <!-- Сітка всіх 33 літер -->
+        <div id="alphabetGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-11 gap-2.5 sm:gap-3">
+          <!-- Генерується через JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ВКЛАДКА 2: ХТО СХОВАВСЯ? ==================== -->
+    <section id="view-quiz" class="tab-view hidden">
+      <div class="porthole-card rounded-3xl p-4 sm:p-7 max-w-3xl mx-auto text-center">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span class="bg-sky-950/75 text-cyan-200 font-extrabold text-xs sm:text-sm px-3.5 py-1.5 rounded-full border border-cyan-400/30">
+            🔍 Знайди першу літеру
+          </span>
+          <button onclick="speakQuizPrompt()" class="btn-3d bg-gradient-to-b from-cyan-400 to-sky-600 text-white font-extrabold text-sm sm:text-base px-4 py-2 rounded-2xl border-2 border-cyan-200 flex items-center gap-2">
+            <span>🔊</span> <span>Повторити питання</span>
+          </button>
+        </div>
+
+        <!-- Ілюстрація тварини -->
+        <div class="relative w-44 h-44 sm:w-52 sm:h-52 mx-auto my-2 bg-gradient-to-b from-sky-400/25 to-sky-950/55 rounded-full border-4 border-cyan-300/45 flex items-center justify-center shadow-inner">
+          <div id="quizCreatureArt" class="w-36 h-36 sm:w-44 sm:h-44 float-animal flex items-center justify-center"></div>
+        </div>
+
+        <!-- Слово з пропущеною першою літерою -->
+        <div id="quizWordDisplay" class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 my-5">
+          <!-- Генерується через JS -->
+        </div>
+
+        <!-- Текстова підказка / реакція -->
+        <p id="quizFeedback" class="text-base sm:text-xl font-extrabold text-amber-200 min-h-[2rem] mb-4">
+          З якої літери починається назва? Обери бульбашку!
+        </p>
+
+        <!-- 4 бульбашки-варіанти -->
+        <div id="quizOptions" class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-xl mx-auto">
+          <!-- Генерується через JS -->
+        </div>
+
+        <!-- Кнопка наступного раунду -->
+        <div id="quizNextContainer" class="mt-6 hidden">
+          <button onclick="nextQuizQuestion()" class="btn-3d bg-gradient-to-b from-emerald-400 to-emerald-600 text-white font-black text-lg sm:text-xl px-8 py-3.5 rounded-3xl border-2 border-emerald-200 inline-flex items-center gap-2">
+            <span>Наступна тварина</span> <span>➡️</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ВКЛАДКА 3: СКЛАДИ СЛОВО ==================== -->
+    <section id="view-builder" class="tab-view hidden">
+      <div class="porthole-card rounded-3xl p-4 sm:p-7 max-w-3xl mx-auto text-center">
+
+        <!-- Вибір складності та кнопки озвучування/підказки -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-1.5 bg-sky-950/75 p-1.5 rounded-2xl border border-cyan-400/30">
+            <button onclick="setBuilderDifficulty('easy')" id="diff-easy" class="px-3.5 py-1.5 rounded-xl font-extrabold text-xs sm:text-sm transition bg-amber-400 text-amber-950 shadow">
+              ⭐ Легкий (3–4)
+            </button>
+            <button onclick="setBuilderDifficulty('hard')" id="diff-hard" class="px-3.5 py-1.5 rounded-xl font-extrabold text-xs sm:text-sm transition text-cyan-200 hover:text-white">
+              ⭐⭐ Складніший (5–8)
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="speakBuilderWord()" class="btn-3d bg-gradient-to-b from-cyan-400 to-sky-600 text-white font-extrabold text-xs sm:text-sm px-3.5 py-2 rounded-2xl border-2 border-cyan-200 flex items-center gap-1.5">
+              <span>🔊</span> <span>Послухати слово</span>
+            </button>
+            <button onclick="useBuilderHint()" class="btn-3d bg-gradient-to-b from-amber-300 to-amber-500 text-amber-950 font-extrabold text-xs sm:text-sm px-3.5 py-2 rounded-2xl border-2 border-amber-100 flex items-center gap-1.5">
+              <span>💡</span> <span>Підказка</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ілюстрація тварини -->
+        <div class="w-36 h-36 sm:w-44 sm:h-44 mx-auto my-2 bg-gradient-to-b from-sky-400/25 to-sky-950/55 rounded-full border-4 border-cyan-300/45 flex items-center justify-center">
+          <div id="builderCreatureArt" class="w-28 h-28 sm:w-36 sm:h-36 float-animal flex items-center justify-center"></div>
+        </div>
+
+        <p id="builderFeedback" class="text-base sm:text-lg font-extrabold text-cyan-100 min-h-[1.75rem] my-2">
+          Натискай на мушлі з літерами по порядку, щоб скласти слово!
+        </p>
+
+        <!-- Комірки для складання слова -->
+        <div id="builderSlots" class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 my-4 min-h-[4rem]">
+          <!-- Генерується через JS -->
+        </div>
+
+        <!-- Перемішані літери-мушлі -->
+        <div class="bg-sky-950/55 rounded-3xl p-4 border-2 border-cyan-400/25 mt-4">
+          <div id="builderPool" class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 min-h-[4.5rem]">
+            <!-- Генерується через JS -->
+          </div>
+        </div>
+
+        <!-- Кнопка наступного слова -->
+        <div id="builderNextContainer" class="mt-5 hidden">
+          <button onclick="nextBuilderWord()" class="btn-3d bg-gradient-to-b from-emerald-400 to-emerald-600 text-white font-black text-lg sm:text-xl px-8 py-3.5 rounded-3xl border-2 border-emerald-200 inline-flex items-center gap-2">
+            <span>Наступне слово</span> <span>➡️</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ВКЛАДКА 4: МІЙ АКВАРІУМ ==================== -->
+    <section id="view-aquarium" class="tab-view hidden space-y-4">
+      <div class="porthole-card rounded-3xl p-3 sm:p-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3 px-1">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+              <span>🐠</span> Мій Підводний Акваріум
+            </h2>
+            <p class="text-xs sm:text-sm text-cyan-100 font-semibold">
+              Натисни на тваринку у воді, щоб вона зробила трюк, пустила бульбашки та привіталася!
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="bg-sky-950/80 border border-cyan-300/40 px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-extrabold text-cyan-200">
+              Відкрито мешканців: <span id="aquariumCountText" class="text-amber-300">1</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Інтерактивний Canvas Акваріум -->
+        <div id="aquariumContainer" class="relative w-full h-[340px] sm:h-[430px] md:h-[480px] rounded-3xl overflow-hidden border-4 border-cyan-300/50 shadow-2xl bg-sky-950 cursor-pointer">
+          <canvas id="aquariumCanvas" class="block w-full h-full"></canvas>
+
+          <!-- Спливаюча табличка при натисканні на тварину в акваріумі -->
+          <div id="aquariumCallout" class="pointer-events-none opacity-0 transition-all duration-300 transform scale-90 absolute top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 text-amber-950 font-black text-base sm:text-2xl px-5 py-2.5 rounded-full border-4 border-white shadow-xl whitespace-nowrap">
+            🐬 Д — Дельфін
+          </div>
+        </div>
+
+        <!-- Колекція відкритих тварин під акваріумом -->
+        <div class="mt-4">
+          <h3 class="text-sm sm:text-base font-extrabold text-cyan-200 mb-2 px-1">
+            Твоя колекція морських друзів (натисни, щоб покликати):
+          </h3>
+          <div id="aquariumCollectionBar" class="flex gap-2.5 overflow-x-auto pb-2 px-1">
+            <!-- Генерується через JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== МОДАЛЬНЕ ВІКНО КАРТКИ ЛІТЕРИ (ВКЛАДКА 1) ==================== -->
+  <div id="letterModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-5 bg-sky-950/80 backdrop-blur-md">
+    <div class="porthole-card relative w-full max-w-xl rounded-3xl p-4 sm:p-7 text-center border-4 border-cyan-300/60 shadow-2xl max-h-[94vh] overflow-y-auto">
+
+      <!-- Кнопка закрити -->
+      <button onclick="closeLetterModal()" class="btn-3d absolute top-3.5 right-3.5 w-11 h-11 rounded-2xl bg-gradient-to-b from-rose-400 to-rose-600 text-white font-black text-xl border-2 border-rose-200 flex items-center justify-center" aria-label="Закрити картку">
+        ✕
+      </button>
+
+      <!-- Велика літера і тип -->
+      <div class="inline-flex items-center gap-3 bg-sky-950/80 border-2 border-amber-300/60 rounded-3xl px-5 py-2 mb-2">
+        <span id="modalBigLetter" class="text-4xl sm:text-5xl font-black text-amber-300 drop-shadow">А а</span>
+        <span id="modalLetterType" class="text-xs sm:text-sm font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-rose-500/40 text-rose-100 border border-rose-300/50">
+          Голосна
+        </span>
+      </div>
+
+      <!-- Ілюстрація тварини -->
+      <div class="w-36 h-36 sm:w-44 sm:h-44 mx-auto my-1 bg-gradient-to-b from-sky-400/25 to-sky-950/60 rounded-full border-4 border-cyan-300/45 flex items-center justify-center">
+        <div id="modalCreatureArt" class="w-28 h-28 sm:w-36 sm:h-36 float-animal flex items-center justify-center"></div>
+      </div>
+
+      <!-- Слово з підсвіченою літерою -->
+      <div id="modalWordHighlighted" class="text-3xl sm:text-4xl md:text-5xl font-black tracking-wide my-2.5 text-white drop-shadow">
+        <!-- Заповнюється через JS -->
+      </div>
+
+      <!-- 3 КНОПКИ ОЗВУЧЕННЯ (Назва і буква / Повільно по складах / Прочитати факти) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 my-3">
+        <button onclick="speakModalNameAndLetter()" class="btn-3d bg-gradient-to-b from-emerald-400 to-emerald-600 text-white font-black text-xs sm:text-sm py-2.5 px-3 rounded-2xl border-2 border-emerald-200 flex items-center justify-center gap-1.5">
+          <span class="text-base">🔊</span> <span>Назва і буква</span>
+        </button>
+
+        <button onclick="speakModalSyllables()" class="btn-3d bg-gradient-to-b from-amber-300 to-amber-500 text-amber-950 font-black text-xs sm:text-sm py-2.5 px-3 rounded-2xl border-2 border-amber-100 flex items-center justify-center gap-1.5">
+          <span class="text-base">🐢</span> <span>Повільно по складах</span>
+        </button>
+
+        <button onclick="speakModalFacts()" class="btn-3d bg-gradient-to-b from-cyan-400 to-sky-600 text-white font-black text-xs sm:text-sm py-2.5 px-3 rounded-2xl border-2 border-cyan-200 flex items-center justify-center gap-1.5">
+          <span class="text-base">📖</span> <span>Прочитати факти</span>
+        </button>
+      </div>
+
+      <!-- Цікаві факти для віку 5–6 років -->
+      <div class="mt-3 bg-sky-950/70 rounded-2xl p-3.5 sm:p-4 border border-cyan-300/30 text-left space-y-2">
+        <div class="text-xs font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+          <span>💡</span> Цікаво знати:
+        </div>
+        <ul id="modalFactsList" class="space-y-1.5 text-sm sm:text-base font-bold text-cyan-50 leading-snug">
+          <!-- Генерується через JS -->
+        </ul>
+      </div>
+
+      <!-- Навігація Попередня / Наступна літера -->
+      <div class="flex items-center justify-between gap-3 mt-4">
+        <button onclick="navigateModalLetter(-1)" class="btn-3d flex-1 bg-gradient-to-b from-sky-500 to-sky-700 text-white font-extrabold text-sm sm:text-base py-3 px-4 rounded-2xl border-2 border-sky-300/60 flex items-center justify-center gap-1.5">
+          <span>⬅️</span> <span>Попередня</span>
+        </button>
+        <button onclick="navigateModalLetter(1)" class="btn-3d flex-1 bg-gradient-to-b from-sky-500 to-sky-700 text-white font-extrabold text-sm sm:text-base py-3 px-4 rounded-2xl border-2 border-sky-300/60 flex items-center justify-center gap-1.5">
+          <span>Наступна</span> <span>➡️</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== МОДАЛЬНЕ ВІКНО НАЛАШТУВАНЬ ГОЛОСУ ДЛЯ БАТЬКІВ ==================== -->
+  <div id="voiceSettingsModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-5 bg-sky-950/80 backdrop-blur-md">
+    <div class="porthole-card relative w-full max-w-lg rounded-3xl p-5 sm:p-6 border-4 border-cyan-300/60 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <button onclick="closeVoiceSettings()" class="btn-3d absolute top-3.5 right-3.5 w-10 h-10 rounded-2xl bg-gradient-to-b from-rose-400 to-rose-600 text-white font-black text-lg border-2 border-rose-200 flex items-center justify-center" aria-label="Закрити налаштування">
+        ✕
+      </button>
+
+      <h3 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2 mb-3">
+        <span>⚙️</span> Налаштування голосу та звуку
+      </h3>
+
+      <!-- Статус системи озвучення -->
+      <div id="voiceEngineStatusBox" class="rounded-2xl p-3.5 mb-4 border text-xs sm:text-sm font-bold leading-relaxed bg-sky-950/75 border-cyan-400/40 text-cyan-100">
+        Перевірка доступних голосів браузера...
+      </div>
+
+      <!-- Вибір голосу зі списку -->
+      <div class="space-y-3 text-left">
+        <div>
+          <label for="voiceSelectDropdown" class="block text-xs sm:text-sm font-extrabold text-cyan-200 mb-1">
+            Голос диктора у браузері:
+          </label>
+          <select id="voiceSelectDropdown" onchange="onVoiceDropdownChange()" class="w-full rounded-2xl bg-sky-950 text-white border-2 border-cyan-400/50 px-3.5 py-2.5 text-sm font-bold focus:outline-none focus:border-amber-300">
+            <option value="auto">Автоматичний вибір (Рекомендовано)</option>
+          </select>
+        </div>
+
+        <!-- Вибір швидкості вимови -->
+        <div>
+          <span class="block text-xs sm:text-sm font-extrabold text-cyan-200 mb-1.5">
+            Швидкість вимови:
+          </span>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button onclick="setSpeechRate(0.8)" id="rate-btn-slow" class="btn-3d py-2.5 px-3 rounded-2xl font-extrabold text-sm border-2 bg-gradient-to-b from-amber-300 to-amber-500 text-amber-950 border-amber-100">
+              🐢 Повільно (0.8x)
+            </button>
+            <button onclick="setSpeechRate(1.0)" id="rate-btn-normal" class="btn-3d py-2.5 px-3 rounded-2xl font-extrabold text-sm border-2 bg-gradient-to-b from-sky-500 to-sky-700 text-white border-sky-300/60">
+              🐬 Звичайно (1.0x)
+            </button>
+          </div>
+        </div>
+
+        <!-- Перемикач звуків бульбашок та ефектів -->
+        <div class="flex items-center justify-between bg-sky-950/65 p-3.5 rounded-2xl border border-cyan-400/30">
+          <div>
+            <div class="font-extrabold text-sm sm:text-base text-white">Звуки бульбашок і ксилофона</div>
+            <div class="text-xs text-cyan-200">Водні ефекти при натисканні на кнопки</div>
+          </div>
+          <button onclick="toggleSfxSetting()" id="sfxToggleBtn" class="btn-3d px-4 py-2 rounded-xl font-black text-sm bg-gradient-to-b from-emerald-400 to-emerald-600 text-white border-2 border-emerald-200">
+            Увімкнено
+          </button>
+        </div>
+
+        <!-- Тестова кнопка в налаштуваннях -->
+        <div class="pt-2 flex gap-2.5">
+          <button onclick="testSoundAndGreet()" class="btn-3d flex-1 bg-gradient-to-b from-emerald-400 to-emerald-600 text-white font-black text-sm sm:text-base py-3 px-4 rounded-2xl border-2 border-emerald-200 flex items-center justify-center gap-2">
+            <span>🔊</span> <span>Прослухати привітання</span>
+          </button>
+          <button onclick="closeVoiceSettings()" class="btn-3d bg-gradient-to-b from-sky-500 to-sky-700 text-white font-extrabold text-sm sm:text-base py-3 px-5 rounded-2xl border-2 border-sky-300/60">
+            Готово
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Спливаюче сповіщення про нагороду -->
+  <div id="toastBanner" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform translate-y-4">
+    <div class="bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 text-amber-950 font-black text-sm sm:text-base px-5 py-3 rounded-full border-4 border-white shadow-2xl flex items-center gap-2 whitespace-nowrap">
+      <span id="toastIcon" class="text-xl">🌟</span>
+      <span id="toastText">Новий мешканець в Акваріумі!</span>
+    </div>
+  </div>
+
+  <!-- Підвал -->
+  <footer class="relative z-10 w-full max-w-6xl mx-auto px-4 py-3 text-center text-xs text-cyan-200/80 flex flex-wrap items-center justify-between gap-2">
+    <span>🚢 Підводна експедиція українською абеткою для майбутніх школярів</span>
+    <div id="resetControls">
+      <button onclick="askResetProgress()" class="underline hover:text-white transition">Почати експедицію спочатку</button>
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================================
+       1. ВЕКТОРНІ SVG-ІЛЮСТРАЦІЇ ДЛЯ ВСІХ МОРСЬКИХ ТВАРИН (УНІКАЛЬНІ ДЛЯ КОЖНОГО ВИДУ)
+       ========================================================================= */
+    const CREATURE_SVGS = {
+      shark: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 65 L4 44 L12 65 L4 86 Z" fill="#38bdf8" stroke="#0369a1" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M68 28 L84 8 L96 32 Z" fill="#0284c7" stroke="#0369a1" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M18 65 C35 32, 110 26, 146 62 C125 88, 52 92, 18 65 Z" fill="#38bdf8" stroke="#0369a1" stroke-width="3.5"/>
+        <path d="M24 67 C55 86, 118 84, 144 63 C118 72, 58 72, 24 67 Z" fill="#e0f2fe"/>
+        <path d="M72 72 L56 96 L84 78 Z" fill="#0284c7" stroke="#0369a1" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="118" cy="53" r="6.5" fill="#ffffff" stroke="#0369a1" stroke-width="2"/>
+        <circle cx="120" cy="53" r="3.5" fill="#0f172a"/>
+        <circle cx="121.5" cy="51.5" r="1.3" fill="#ffffff"/>
+        <path d="M112 69 Q126 76 138 66" stroke="#0369a1" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M118 70 L121 74 L124 70 L127 74 L130 70" fill="#ffffff"/>
+      </svg>`,
+
+      beluga: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 68 L6 48 L14 68 L6 88 Z" fill="#e0f2fe" stroke="#0284c7" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M18 68 C26 30, 128 24, 146 62 C148 82, 114 92, 62 88 C34 86, 24 78, 18 68 Z" fill="#ffffff" stroke="#0284c7" stroke-width="3.5"/>
+        <path d="M78 74 L62 96 L90 80 Z" fill="#e0f2fe" stroke="#0284c7" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="122" cy="56" r="5.5" fill="#0f172a"/>
+        <circle cx="123.5" cy="54.5" r="1.8" fill="#ffffff"/>
+        <path d="M118 69 Q130 76 142 67" stroke="#0284c7" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      octopus: `<svg viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg">
+        <path d="M44 76 C24 84, 14 104, 26 112 C34 117, 42 104, 52 86" fill="none" stroke="#c084fc" stroke-width="11" stroke-linecap="round"/>
+        <path d="M62 82 C48 100, 46 118, 58 120 C68 121, 70 104, 74 86" fill="none" stroke="#a855f7" stroke-width="11" stroke-linecap="round"/>
+        <path d="M98 82 C112 100, 114 118, 102 120 C92 121, 90 104, 86 86" fill="none" stroke="#a855f7" stroke-width="11" stroke-linecap="round"/>
+        <path d="M116 76 C136 84, 146 104, 134 112 C126 117, 118 104, 108 86" fill="none" stroke="#c084fc" stroke-width="11" stroke-linecap="round"/>
+        <ellipse cx="80" cy="52" rx="42" ry="38" fill="#c084fc" stroke="#7e22ce" stroke-width="3.5"/>
+        <circle cx="66" cy="56" r="8" fill="#ffffff" stroke="#7e22ce" stroke-width="2.5"/>
+        <circle cx="94" cy="56" r="8" fill="#ffffff" stroke="#7e22ce" stroke-width="2.5"/>
+        <circle cx="67" cy="56" r="4" fill="#0f172a"/>
+        <circle cx="93" cy="56" r="4" fill="#0f172a"/>
+        <path d="M72 69 Q80 77 88 69" stroke="#7e22ce" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <circle cx="54" cy="65" r="4" fill="#f472b6" opacity="0.75"/>
+        <circle cx="106" cy="65" r="4" fill="#f472b6" opacity="0.75"/>
+      </svg>`,
+
+      whale: `<svg viewBox="0 0 160 125" xmlns="http://www.w3.org/2000/svg">
+        <path d="M98 30 C98 14, 84 10, 82 20 M98 30 C98 14, 112 10, 114 20" stroke="#7dd3fc" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M22 68 L6 48 L14 68 L6 88 Z" fill="#2563eb" stroke="#1e3a8a" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M18 68 C22 30, 134 26, 146 66 C148 88, 110 98, 62 94 C36 92, 24 80, 18 68 Z" fill="#3b82f6" stroke="#1e3a8a" stroke-width="3.5"/>
+        <path d="M56 80 C84 96, 134 92, 145 70 C122 78, 86 78, 56 80 Z" fill="#bfdbfe"/>
+        <path d="M78 76 L62 98 L90 82 Z" fill="#2563eb" stroke="#1e3a8a" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="122" cy="60" r="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+        <circle cx="123.5" cy="60" r="3.2" fill="#0f172a"/>
+        <path d="M116 73 Q130 80 142 71" stroke="#1e3a8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      wrasse: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M28 60 L8 38 L14 60 L8 82 Z" fill="#10b981" stroke="#065f46" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M54 32 Q80 14 106 32" fill="#f59e0b" stroke="#065f46" stroke-width="2.5"/>
+        <ellipse cx="84" cy="60" rx="54" ry="30" fill="#34d399" stroke="#065f46" stroke-width="3.5"/>
+        <path d="M56 34 Q66 60 56 86 M76 31 Q86 60 76 89 M96 34 Q106 60 96 86" stroke="#3b82f6" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="118" cy="54" r="6" fill="#ffffff" stroke="#065f46" stroke-width="2"/>
+        <circle cx="120" cy="54" r="3" fill="#0f172a"/>
+        <ellipse cx="137" cy="63" rx="5" ry="4" fill="#fb7185" stroke="#065f46" stroke-width="2"/>
+      </svg>`,
+
+      dolphin: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 76 L8 60 L16 78 L8 94 Z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M72 34 L86 14 L96 36 Z" fill="#3b82f6" stroke="#1d4ed8" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M20 76 C36 32, 102 24, 134 56 L152 60 L134 69 C112 88, 52 90, 20 76 Z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="3.5" stroke-linejoin="round"/>
+        <path d="M28 75 C58 84, 106 82, 132 67 C104 72, 60 72, 28 75 Z" fill="#dbeafe"/>
+        <path d="M74 68 L60 92 L86 73 Z" fill="#3b82f6" stroke="#1d4ed8" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="116" cy="51" r="6" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+        <circle cx="118" cy="51" r="3.2" fill="#0f172a"/>
+        <path d="M118 63 Q127 67 134 61" stroke="#1d4ed8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      stingray: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M42 76 Q18 96 10 112" stroke="#0d9488" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M36 74 C44 34, 114 24, 146 54 C128 84, 82 96, 36 74 Z" fill="#2dd4bf" stroke="#115e59" stroke-width="3.5" stroke-linejoin="round"/>
+        <circle cx="84" cy="48" r="4" fill="#fef08a"/>
+        <circle cx="102" cy="44" r="3.5" fill="#fef08a"/>
+        <circle cx="94" cy="60" r="4" fill="#fef08a"/>
+        <circle cx="118" cy="48" r="5" fill="#ffffff" stroke="#115e59" stroke-width="2"/>
+        <circle cx="119.5" cy="48" r="2.6" fill="#0f172a"/>
+        <path d="M114 62 Q124 67 132 60" stroke="#115e59" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      scorpionfish: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M26 64 L8 44 L14 64 L8 84 Z" fill="#f97316" stroke="#7c2d12" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M48 34 L54 16 L64 32 L74 14 L82 32 L92 18 L98 36" fill="#fb923c" stroke="#7c2d12" stroke-width="2.5" stroke-linejoin="round"/>
+        <ellipse cx="84" cy="64" rx="52" ry="30" fill="#fb923c" stroke="#7c2d12" stroke-width="3.5"/>
+        <circle cx="62" cy="56" r="5" fill="#9a3412" opacity="0.5"/>
+        <circle cx="82" cy="70" r="6" fill="#9a3412" opacity="0.5"/>
+        <circle cx="114" cy="54" r="7.5" fill="#fef08a" stroke="#7c2d12" stroke-width="2"/>
+        <circle cx="116" cy="54" r="3.5" fill="#0f172a"/>
+        <path d="M112 72 Q124 76 134 68" stroke="#7c2d12" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      yellowtail: `<svg viewBox="0 0 165 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 60 L6 34 L16 60 L6 86 Z" fill="#facc15" stroke="#a16207" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M26 60 C46 32, 114 32, 148 60 C114 88, 46 88, 26 60 Z" fill="#93c5fd" stroke="#1e40af" stroke-width="3.5"/>
+        <path d="M36 60 L134 60" stroke="#fde047" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="122" cy="53" r="5.5" fill="#ffffff" stroke="#1e40af" stroke-width="2"/>
+        <circle cx="123.5" cy="53" r="2.8" fill="#0f172a"/>
+        <path d="M122 66 Q132 70 140 64" stroke="#1e40af" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      starfish: `<svg viewBox="0 0 140 135" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="70,12 87,47 126,52 97,79 105,118 70,99 35,118 43,79 14,52 53,47" fill="#fb923c" stroke="#c2410c" stroke-width="3.5" stroke-linejoin="round"/>
+        <circle cx="58" cy="64" r="6" fill="#ffffff" stroke="#c2410c" stroke-width="2"/>
+        <circle cx="82" cy="64" r="6" fill="#ffffff" stroke="#c2410c" stroke-width="2"/>
+        <circle cx="59" cy="64" r="3" fill="#0f172a"/>
+        <circle cx="81" cy="64" r="3" fill="#0f172a"/>
+        <path d="M62 76 Q70 84 78 76" stroke="#c2410c" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      pipefish: `<svg viewBox="0 0 175 110" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 56 L6 48 L10 56 L6 64 Z" fill="#4ade80" stroke="#166534" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M16 56 Q55 44 95 56 T152 54 L168 52 L168 57 L152 59 Q115 68 75 56 T16 56 Z" fill="#86efac" stroke="#166534" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="144" cy="52" r="5" fill="#ffffff" stroke="#166534" stroke-width="2"/>
+        <circle cx="145" cy="52" r="2.5" fill="#0f172a"/>
+      </svg>`,
+
+      urchin: `<svg viewBox="0 0 150 135" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#581c87" stroke-width="4" stroke-linecap="round">
+          <line x1="75" y1="68" x2="75" y2="14"/>
+          <line x1="75" y1="68" x2="32" y2="26"/>
+          <line x1="75" y1="68" x2="118" y2="26"/>
+          <line x1="75" y1="68" x2="18" y2="68"/>
+          <line x1="75" y1="68" x2="132" y2="68"/>
+          <line x1="75" y1="68" x2="32" y2="108"/>
+          <line x1="75" y1="68" x2="118" y2="108"/>
+          <line x1="75" y1="68" x2="52" y2="18"/>
+          <line x1="75" y1="68" x2="98" y2="18"/>
+        </g>
+        <circle cx="75" cy="68" r="34" fill="#9333ea" stroke="#4c1d95" stroke-width="3.5"/>
+        <circle cx="63" cy="64" r="6.5" fill="#ffffff" stroke="#4c1d95" stroke-width="2"/>
+        <circle cx="87" cy="64" r="6.5" fill="#ffffff" stroke="#4c1d95" stroke-width="2"/>
+        <circle cx="64" cy="64" r="3.2" fill="#0f172a"/>
+        <circle cx="86" cy="64" r="3.2" fill="#0f172a"/>
+        <path d="M68 77 Q75 83 82 77" stroke="#f0abfc" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      ruffe: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M28 62 L10 42 L15 62 L10 82 Z" fill="#eab308" stroke="#713f12" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M54 34 L62 18 L72 32 L82 18 L92 34" fill="#fde047" stroke="#713f12" stroke-width="2.5"/>
+        <ellipse cx="84" cy="62" rx="52" ry="29" fill="#facc15" stroke="#713f12" stroke-width="3.5"/>
+        <circle cx="116" cy="54" r="7" fill="#ffffff" stroke="#713f12" stroke-width="2"/>
+        <circle cx="118" cy="54" r="3.5" fill="#0f172a"/>
+        <path d="M114 70 Q124 75 132 68" stroke="#713f12" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      crab: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M44 54 C28 42, 26 26, 38 22 C44 20, 46 30, 42 36 C48 34, 54 24, 56 30 C58 40, 50 50, 48 56" fill="#ef4444" stroke="#991b1b" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M116 54 C132 42, 134 26, 122 22 C116 20, 114 30, 118 36 C112 34, 106 24, 104 30 C102 40, 110 50, 112 56" fill="#ef4444" stroke="#991b1b" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M42 74 L22 86 M44 82 L26 98 M118 74 L138 86 M116 82 L134 98" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/>
+        <line x1="66" y1="52" x2="64" y2="38" stroke="#991b1b" stroke-width="4"/>
+        <line x1="94" y1="52" x2="96" y2="38" stroke="#991b1b" stroke-width="4"/>
+        <ellipse cx="80" cy="72" rx="42" ry="26" fill="#f87171" stroke="#991b1b" stroke-width="3.5"/>
+        <circle cx="64" cy="36" r="7" fill="#ffffff" stroke="#991b1b" stroke-width="2.5"/>
+        <circle cx="96" cy="36" r="7" fill="#ffffff" stroke="#991b1b" stroke-width="2.5"/>
+        <circle cx="64" cy="36" r="3.5" fill="#0f172a"/>
+        <circle cx="96" cy="36" r="3.5" fill="#0f172a"/>
+        <path d="M68 74 Q80 84 92 74" stroke="#991b1b" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      langoust: `<svg viewBox="0 0 165 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M126 52 Q148 26 160 22 M126 58 Q150 42 162 44" stroke="#fb923c" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M24 64 L8 48 L14 64 L8 80 Z" fill="#ea580c" stroke="#7c2d12" stroke-width="3" stroke-linejoin="round"/>
+        <ellipse cx="78" cy="64" rx="50" ry="21" fill="#f97316" stroke="#7c2d12" stroke-width="3.5"/>
+        <path d="M54 46 L54 82 M72 45 L72 83 M90 46 L90 82" stroke="#7c2d12" stroke-width="2.5"/>
+        <circle cx="114" cy="56" r="5" fill="#ffffff" stroke="#7c2d12" stroke-width="2"/>
+        <circle cx="115.5" cy="56" r="2.5" fill="#0f172a"/>
+      </svg>`,
+
+      jellyfish: `<svg viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg">
+        <path d="M52 68 Q44 92 54 114 M70 70 Q78 95 68 118 M90 70 Q82 95 92 118 M108 68 Q116 92 106 114" stroke="#f472b6" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M36 66 C36 24, 124 24, 124 66 C110 74, 94 64, 80 72 C66 64, 50 74, 36 66 Z" fill="#f9a8d4" stroke="#be185d" stroke-width="3.5"/>
+        <circle cx="68" cy="52" r="5.5" fill="#ffffff" stroke="#be185d" stroke-width="2"/>
+        <circle cx="92" cy="52" r="5.5" fill="#ffffff" stroke="#be185d" stroke-width="2"/>
+        <circle cx="68" cy="52" r="2.8" fill="#0f172a"/>
+        <circle cx="92" cy="52" r="2.8" fill="#0f172a"/>
+        <path d="M74 60 Q80 65 86 60" stroke="#be185d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      narwhal: `<svg viewBox="0 0 165 120" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="122,56 162,48 122,64" fill="#fde047" stroke="#a16207" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M22 66 L6 48 L12 66 L6 84 Z" fill="#38bdf8" stroke="#0369a1" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M18 66 C24 34, 114 32, 126 62 C128 84, 96 92, 54 88 C32 86, 22 76, 18 66 Z" fill="#7dd3fc" stroke="#0369a1" stroke-width="3.5"/>
+        <circle cx="108" cy="56" r="5.5" fill="#ffffff" stroke="#0369a1" stroke-width="2"/>
+        <circle cx="109.5" cy="56" r="2.8" fill="#0f172a"/>
+        <path d="M104 68 Q113 73 120 67" stroke="#0369a1" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      lobster: `<svg viewBox="0 0 165 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M122 50 C138 34, 154 34, 156 46 C157 52, 142 52, 136 50 C144 54, 156 60, 150 68 C144 72, 130 62, 122 56" fill="#dc2626" stroke="#7f1d1d" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M22 66 L8 52 L14 66 L8 80 Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="3" stroke-linejoin="round"/>
+        <ellipse cx="76" cy="66" rx="48" ry="20" fill="#ef4444" stroke="#7f1d1d" stroke-width="3.5"/>
+        <circle cx="112" cy="58" r="5" fill="#ffffff" stroke="#7f1d1d" stroke-width="2"/>
+        <circle cx="113.5" cy="58" r="2.5" fill="#0f172a"/>
+      </svg>`,
+
+      penguin: `<svg viewBox="0 0 140 135" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="54" cy="118" rx="14" ry="7" fill="#f97316" stroke="#9a3412" stroke-width="2.5"/>
+        <ellipse cx="86" cy="118" rx="14" ry="7" fill="#f97316" stroke="#9a3412" stroke-width="2.5"/>
+        <ellipse cx="70" cy="70" rx="36" ry="48" fill="#1e293b" stroke="#0f172a" stroke-width="3.5"/>
+        <ellipse cx="70" cy="76" rx="24" ry="36" fill="#ffffff"/>
+        <circle cx="58" cy="46" r="5.5" fill="#ffffff"/>
+        <circle cx="82" cy="46" r="5.5" fill="#ffffff"/>
+        <circle cx="59" cy="46" r="2.8" fill="#0f172a"/>
+        <circle cx="81" cy="46" r="2.8" fill="#0f172a"/>
+        <polygon points="62,54 78,54 70,66" fill="#fb923c" stroke="#9a3412" stroke-width="2" stroke-linejoin="round"/>
+      </svg>`,
+
+      swordfish: `<svg viewBox="0 0 175 120" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="128,57 172,60 128,64" fill="#e2e8f0" stroke="#1e3a8a" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M22 62 L4 38 L12 62 L4 86 Z" fill="#2563eb" stroke="#1e3a8a" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M64 34 L76 10 L90 36 Z" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M18 62 C38 34, 106 34, 134 60 C106 86, 38 86, 18 62 Z" fill="#3b82f6" stroke="#1e3a8a" stroke-width="3.5"/>
+        <circle cx="114" cy="54" r="5.5" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+        <circle cx="115.5" cy="54" r="2.8" fill="#0f172a"/>
+      </svg>`,
+
+      seal: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 84 L8 72 L14 86 L8 98 Z" fill="#94a3b8" stroke="#334155" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M20 84 C36 68, 72 62, 92 42 C104 28, 126 32, 130 48 C134 64, 118 86, 86 90 C56 94, 34 90, 20 84 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3.5"/>
+        <path d="M84 78 L72 98 L98 86 Z" fill="#94a3b8" stroke="#334155" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="114" cy="46" r="5.5" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+        <circle cx="115.5" cy="46" r="2.8" fill="#0f172a"/>
+        <circle cx="128" cy="54" r="3.5" fill="#1e293b"/>
+        <path d="M122 60 Q127 64 131 59" stroke="#334155" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      oyster: `<svg viewBox="0 0 150 130" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 72 C24 22, 126 22, 126 72 Z" fill="#f472b6" stroke="#9d174d" stroke-width="3.5"/>
+        <path d="M18 76 C18 106, 132 106, 132 76 Z" fill="#ec4899" stroke="#9d174d" stroke-width="3.5"/>
+        <circle cx="75" cy="70" r="22" fill="#fdf2f8" stroke="#fbcfe8" stroke-width="3"/>
+        <circle cx="68" cy="63" r="6" fill="#ffffff"/>
+      </svg>`,
+
+      pufferfish: `<svg viewBox="0 0 150 130" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="75,14 69,28 81,28" fill="#eab308"/>
+        <polygon points="75,118 69,104 81,104" fill="#eab308"/>
+        <polygon points="22,66 36,60 36,72" fill="#eab308"/>
+        <polygon points="128,66 114,60 114,72" fill="#eab308"/>
+        <circle cx="75" cy="66" r="42" fill="#fde047" stroke="#a16207" stroke-width="3.5"/>
+        <path d="M35 72 C52 94, 98 94, 115 72 C98 104, 52 104, 35 72 Z" fill="#fef9c3"/>
+        <circle cx="62" cy="56" r="7" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
+        <circle cx="92" cy="56" r="7" fill="#ffffff" stroke="#a16207" stroke-width="2"/>
+        <circle cx="63" cy="56" r="3.5" fill="#0f172a"/>
+        <circle cx="91" cy="56" r="3.5" fill="#0f172a"/>
+        <ellipse cx="77" cy="70" rx="6" ry="4.5" fill="#f97316" stroke="#a16207" stroke-width="2"/>
+      </svg>`,
+
+      hake: `<svg viewBox="0 0 165 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 62 L6 42 L13 62 L6 82 Z" fill="#94a3b8" stroke="#334155" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M20 62 C44 34, 116 34, 148 62 C116 88, 44 88, 20 62 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3.5"/>
+        <path d="M26 65 C55 82, 115 82, 145 63" fill="#f8fafc"/>
+        <circle cx="122" cy="54" r="6" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+        <circle cx="123.5" cy="54" r="3" fill="#0f172a"/>
+        <path d="M122 67 Q132 71 140 65" stroke="#334155" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      cichlid: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M28 60 L10 38 L15 60 L10 82 Z" fill="#f59e0b" stroke="#78350f" stroke-width="3" stroke-linejoin="round"/>
+        <ellipse cx="86" cy="60" rx="52" ry="33" fill="#fbbf24" stroke="#78350f" stroke-width="3.5"/>
+        <path d="M60 30 L60 90 M78 28 L78 92 M96 31 L96 89" stroke="#1e3a8a" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="118" cy="54" r="6" fill="#ffffff" stroke="#78350f" stroke-width="2"/>
+        <circle cx="119.5" cy="54" r="3" fill="#0f172a"/>
+        <path d="M118 67 Q127 72 134 65" stroke="#78350f" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      turtle: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M46 74 L28 96 L48 92 Z" fill="#4ade80" stroke="#15803d" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M98 76 L112 102 L124 88 Z" fill="#4ade80" stroke="#15803d" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M114 58 C128 48, 146 50, 148 62 C150 72, 134 76, 116 70 Z" fill="#4ade80" stroke="#15803d" stroke-width="3"/>
+        <path d="M24 68 C26 30, 114 30, 118 68 Z" fill="#16a34a" stroke="#14532d" stroke-width="3.5"/>
+        <path d="M22 68 L120 68 L112 77 L30 77 Z" fill="#fde047" stroke="#14532d" stroke-width="3" stroke-linejoin="round"/>
+        <polygon points="71,36 86,46 80,62 62,62 56,46" fill="#22c55e" stroke="#14532d" stroke-width="2.5"/>
+        <circle cx="136" cy="58" r="5" fill="#ffffff" stroke="#14532d" stroke-width="2"/>
+        <circle cx="137.5" cy="58" r="2.6" fill="#0f172a"/>
+        <path d="M132 67 Q139 70 144 66" stroke="#14532d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`,
+
+      scabbardfish: `<svg viewBox="0 0 175 110" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 58 L4 48 L8 58 L4 68 Z" fill="#e2e8f0" stroke="#475569" stroke-width="2.5"/>
+        <path d="M14 58 Q55 38 95 58 T162 56 L150 68 Q105 48 65 68 T14 58 Z" fill="#f1f5f9" stroke="#475569" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="144" cy="55" r="5.5" fill="#fde047" stroke="#475569" stroke-width="2"/>
+        <circle cx="145" cy="55" r="2.6" fill="#0f172a"/>
+      </svg>`,
+
+      barracuda: `<svg viewBox="0 0 175 115" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 58 L4 38 L10 58 L4 78 Z" fill="#0284c7" stroke="#0c4a6e" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M16 58 C46 38, 124 38, 164 58 C124 78, 46 78, 16 58 Z" fill="#38bdf8" stroke="#0c4a6e" stroke-width="3.5"/>
+        <path d="M56 44 L52 62 M74 43 L70 62 M92 43 L88 62 M110 45 L106 61" stroke="#0c4a6e" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="134" cy="53" r="5.5" fill="#ffffff" stroke="#0c4a6e" stroke-width="2"/>
+        <circle cx="135.5" cy="53" r="2.8" fill="#0f172a"/>
+      </svg>`,
+
+      yulis: `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M26 60 L8 40 L14 60 L8 80 Z" fill="#f43f5e" stroke="#881337" stroke-width="3" stroke-linejoin="round"/>
+        <ellipse cx="86" cy="60" rx="52" ry="27" fill="#38bdf8" stroke="#0369a1" stroke-width="3.5"/>
+        <path d="M42 54 Q86 44 128 56" stroke="#f43f5e" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M42 66 Q86 76 128 64" stroke="#fde047" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <circle cx="118" cy="53" r="5.5" fill="#ffffff" stroke="#0369a1" stroke-width="2"/>
+        <circle cx="119.5" cy="53" r="2.8" fill="#0f172a"/>
+      </svg>`,
+
+      angelfish: `<svg viewBox="0 0 155 140" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 70 L8 52 L14 70 L8 88 Z" fill="#fde047" stroke="#0369a1" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M56 38 C64 10, 86 8, 96 36 C122 44, 138 58, 144 70 C138 82, 122 96, 96 104 C86 132, 64 130, 56 102 C36 92, 24 80, 24 70 C24 60, 36 48, 56 38 Z" fill="#38bdf8" stroke="#0369a1" stroke-width="3.5" stroke-linejoin="round"/>
+        <path d="M68 20 Q76 70 68 120 M92 34 Q100 70 92 106" stroke="#fde047" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <circle cx="118" cy="64" r="6" fill="#ffffff" stroke="#0369a1" stroke-width="2"/>
+        <circle cx="119.5" cy="64" r="3" fill="#0f172a"/>
+        <path d="M118 76 Q126 80 132 75" stroke="#0369a1" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>`
+    };
+
+    /* =========================================================================
+       2. ПОВНА БАЗА ДАНИХ УКРАЇНСЬКОЇ АБЕТКИ (ВСІ 33 ЛІТЕРИ)
+       Включає поділ по складах для кнопки «🐢 Повільно по складах» та цікаві факти.
+       ========================================================================= */
+    const ALPHABET_DATA = [
+      {
+        letter: 'А', letterName: 'А', type: 'vowel', word: 'Акула', syllables: 'А - ку - ла', highlight: [0], creatureId: 'shark',
+        facts: [
+          'У акули зовсім немає кісток — її скелет гнучкий, як вушко!',
+          'Вона вміє відчувати краплинку води за багато кілометрів.'
+        ]
+      },
+      {
+        letter: 'Б', letterName: 'Бе', type: 'consonant', word: 'Білуха', syllables: 'Бі - лу - ха', highlight: [0], creatureId: 'beluga',
+        facts: [
+          'Білуха — це білосніжний полярний кит, який любить співати під водою.',
+          'Вона вміє кивати головою і пускати веселі кільця з бульбашок!'
+        ]
+      },
+      {
+        letter: 'В', letterName: 'Ве', type: 'consonant', word: 'Восьминіг', syllables: 'Вось - ми - ніг', highlight: [0], creatureId: 'octopus',
+        facts: [
+          'У восьминога вісім спритних рук-щупалець і цілих три серця!',
+          'Він уміє змінювати колір шкіри, щоб гратися у хованки.'
+        ]
+      },
+      {
+        letter: 'Г', letterName: 'Ге', type: 'consonant', word: 'Горбатий кит', syllables: 'Гор - ба - тий кит', highlight: [0], creatureId: 'whale',
+        facts: [
+          'Горбатий кит любить вистрибувати з води з величезним сплеском.',
+          'Він складає довгі красиві пісні, які чути далеко в океані.'
+        ]
+      },
+      {
+        letter: 'Ґ', letterName: 'Ґе', type: 'consonant', word: 'Ґубань', syllables: 'Ґу - бань', highlight: [0], creatureId: 'wrasse',
+        facts: [
+          'Ґубань — яскрава різнокольорова рибка, яка обожнює коралові рифи.',
+          'На ніч деякі ґубані ховаються у м’який морський пісок, немов під ковдру!'
+        ]
+      },
+      {
+        letter: 'Д', letterName: 'Де', type: 'consonant', word: 'Дельфін', syllables: 'Дель - фін', highlight: [0], creatureId: 'dolphin',
+        facts: [
+          'Дельфіни дуже розумні та кличуть одне одного власними іменами-свистами.',
+          'Вони обожнюють кататися на хвилях наввипередки з кораблями.'
+        ]
+      },
+      {
+        letter: 'Е', letterName: 'Е', type: 'vowel', word: 'Електричний скат', syllables: 'Е - лек - трич - ний скат', highlight: [0], creatureId: 'stingray',
+        facts: [
+          'Цей незвичайний скат носить у собі маленьку природну батарейку.',
+          'Він використовує легкий розряд, щоб відлякувати хижаків.'
+        ]
+      },
+      {
+        letter: 'Є', letterName: 'Є', type: 'vowel', word: 'Єрш морський', syllables: 'Єрш мор - ський', highlight: [0], creatureId: 'scorpionfish',
+        facts: [
+          'Морський єрш має колючий гребінець на спині та великі виразні очі.',
+          'Він майстерно ховається серед підводних камінців.'
+        ]
+      },
+      {
+        letter: 'Ж', letterName: 'Же', type: 'consonant', word: 'Жовтохвіст', syllables: 'Жов - то - хвіст', highlight: [0], creatureId: 'yellowtail',
+        facts: [
+          'Жовтохвіст отримав свою назву за яскравий золотисто-жовтий хвіст.',
+          'Ці риби плавають великими дружними зграями у теплих морях.'
+        ]
+      },
+      {
+        letter: 'З', letterName: 'Зе', type: 'consonant', word: 'Зірка морська', syllables: 'Зір - ка мор - ська', highlight: [0], creatureId: 'starfish',
+        facts: [
+          'Морська зірка повільно повзає по дну за допомогою сотень крихітних ніжок.',
+          'Більшість зірок мають п’ять промінців, але бувають і з дванадцятьма!'
+        ]
+      },
+      {
+        letter: 'И', letterName: 'И', type: 'vowel', word: 'Кит', syllables: 'Кит', highlight: [1], creatureId: 'whale',
+        facts: [
+          'Синій кит — найбільша тварина на всій планеті Земля!',
+          'Його серце завбільшки з маленький автомобіль, а фонтан б’є вище за будинок.'
+        ]
+      },
+      {
+        letter: 'І', letterName: 'І', type: 'vowel', word: 'Іглиця морська', syllables: 'І - гли - ця мор - ська', highlight: [0], creatureId: 'pipefish',
+        facts: [
+          'Морська іглиця тоненька, мов травинка, і є близькою родичкою морського коника.',
+          'Вона ховається серед зелених водоростей, де її майже не помітно.'
+        ]
+      },
+      {
+        letter: 'Ї', letterName: 'Ї', type: 'vowel', word: 'Їжак морський', syllables: 'Ї - жак мор - ський', highlight: [0], creatureId: 'urchin',
+        facts: [
+          'Морський їжак вкритий колючками, як справжній лісовий їжачок!',
+          'Своїми голками він не лише захищається, а й пересувається по камінцях.'
+        ]
+      },
+      {
+        letter: 'Й', letterName: 'Йот', type: 'consonant', word: 'Йорж морський', syllables: 'Йорж мор - ський', highlight: [0], creatureId: 'ruffe',
+        facts: [
+          'Морський йорж має колючі плавці та сріблясто-золотисту луску.',
+          'Він любить відпочивати біля підводних скель недалеко від берега.'
+        ]
+      },
+      {
+        letter: 'К', letterName: 'Ка', type: 'consonant', word: 'Краб', syllables: 'Краб', highlight: [0], creatureId: 'crab',
+        facts: [
+          'Краб бігає по піску боком і має міцні клешні замість рук.',
+          'Коли краб підростає, він скидає старий панцир і одягає новий!'
+        ]
+      },
+      {
+        letter: 'Л', letterName: 'Ел', type: 'consonant', word: 'Лангуст', syllables: 'Лан - густ', highlight: [0], creatureId: 'langoust',
+        facts: [
+          'Лангуст схожий на великого морського рака з дуже довгими вусами.',
+          'У разі небезпеки він швидко пливе хвостом уперед!'
+        ]
+      },
+      {
+        letter: 'М', letterName: 'Ем', type: 'consonant', word: 'Медуза', syllables: 'Ме - ду - за', highlight: [0], creatureId: 'jellyfish',
+        facts: [
+          'Медуза майже повністю складається з води і схожа на прозору парасольку.',
+          'Деякі глибоководні медузи вміють світитися у темряві, як ліхтарики!'
+        ]
+      },
+      {
+        letter: 'Н', letterName: 'Ен', type: 'consonant', word: 'Нарвал', syllables: 'Нар - вал', highlight: [0], creatureId: 'narwhal',
+        facts: [
+          'Нарвала називають морським єдинорогом за його довгий кручений бивень.',
+          'Він живе серед крижин Арктики й уміє глибоко пірнати.'
+        ]
+      },
+      {
+        letter: 'О', letterName: 'О', type: 'vowel', word: 'Омар', syllables: 'О - мар', highlight: [0], creatureId: 'lobster',
+        facts: [
+          'Омар живе у затишних підводних печерках і виходить гуляти вночі.',
+          'Він уміє відчувати запахи своїми довгими вусиками.'
+        ]
+      },
+      {
+        letter: 'П', letterName: 'Пе', type: 'consonant', word: 'Пінгвін', syllables: 'Пінг - він', highlight: [0], creatureId: 'penguin',
+        facts: [
+          'Пінгвін — це птах, який не вміє літати в небі, зате «літає» під водою!',
+          'Його крила перетворилися на сильні ласти для швидкого плавання.'
+        ]
+      },
+      {
+        letter: 'Р', letterName: 'Ер', type: 'consonant', word: 'Риба-меч', syllables: 'Ри - ба меч', highlight: [0], creatureId: 'swordfish',
+        facts: [
+          'Риба-меч має довгий гострий ніс, схожий на справжній лицарський меч!',
+          'Вона одна з найшвидших плавців у всьому океані.'
+        ]
+      },
+      {
+        letter: 'С', letterName: 'Ес', type: 'consonant', word: 'Скат', syllables: 'Скат', highlight: [0], creatureId: 'stingray',
+        facts: [
+          'Скат плаває так плавно, ніби махає крилами, як величезний підводний птах.',
+          'Він любить закопуватися у м’який морський пісок.'
+        ]
+      },
+      {
+        letter: 'Т', letterName: 'Те', type: 'consonant', word: 'Тюлень', syllables: 'Тю - лень', highlight: [0], creatureId: 'seal',
+        facts: [
+          'Тюлень незграбно повзає по березі, зате у воді він справжній акробат!',
+          'Він уміє затримувати подих під водою на цілих пів години.'
+        ]
+      },
+      {
+        letter: 'У', letterName: 'У', type: 'vowel', word: 'Устриця', syllables: 'Ус - три - ця', highlight: [0], creatureId: 'oyster',
+        facts: [
+          'Устриця живе у двостулковій мушлі та вміє створювати справжні перлини!',
+          'Вона фільтрує морську воду, роблячи океан чистішим.'
+        ]
+      },
+      {
+        letter: 'Ф', letterName: 'Еф', type: 'consonant', word: 'Фугу', syllables: 'Фу - гу', highlight: [0], creatureId: 'pufferfish',
+        facts: [
+          'Коли рибка фугу лякається, вона набирає води і надувається, мов колючий м’ячик!',
+          'Тоді жоден хижак не може її проковтнути.'
+        ]
+      },
+      {
+        letter: 'Х', letterName: 'Ха', type: 'consonant', word: 'Хек', syllables: 'Хек', highlight: [0], creatureId: 'hake',
+        facts: [
+          'Хек — срібляста морська риба, яка любить плавати на глибині.',
+          'Удень хек відпочиває біля дна, а ввечері піднімається ближче до поверхні.'
+        ]
+      },
+      {
+        letter: 'Ц', letterName: 'Це', type: 'consonant', word: 'Цихліда', syllables: 'Цих - лі - да', highlight: [0], creatureId: 'cichlid',
+        facts: [
+          'Цихліда — дуже яскрава смугаста рибка, яка дбайливо охороняє своїх мальків.',
+          'Вона вміє будувати затишні гніздечка з піску та камінців.'
+        ]
+      },
+      {
+        letter: 'Ч', letterName: 'Че', type: 'consonant', word: 'Черепаха', syllables: 'Че - ре - па - ха', highlight: [0], creatureId: 'turtle',
+        facts: [
+          'Морська черепаха носить свій міцний будиночок-панцир завжди на спині.',
+          'Вона може проплисти тисячі кілометрів через увесь океан!'
+        ]
+      },
+      {
+        letter: 'Ш', letterName: 'Ша', type: 'consonant', word: 'Шабля-риба', syllables: 'Шаб - ля ри - ба', highlight: [0], creatureId: 'scabbardfish',
+        facts: [
+          'Шабля-риба має довге, тонке та блискуче тіло, мов срібна стрічка.',
+          'На сонечку її луска переливається всіма барвами веселки!'
+        ]
+      },
+      {
+        letter: 'Щ', letterName: 'Ща', type: 'consonant', word: 'Щука морська', syllables: 'Щу - ка мор - ська', highlight: [0], creatureId: 'barracuda',
+        facts: [
+          'Морська щука, або баракуда, плаває стрімко, мов срібна стріла.',
+          'Вона любить теплі тропічні моря та коралові лагуни.'
+        ]
+      },
+      {
+        letter: 'Ь', letterName: 'М’який знак', type: 'sign', word: 'Тюлень', syllables: 'Тю - ле - нь', highlight: [5], creatureId: 'seal',
+        facts: [
+          'М’який знак «Ь» не має власного звука, але робить приголосну літеру перед собою ніжною!',
+          'Послухай, як лагідно звучить кінець слова: тюлен-ь!'
+        ]
+      },
+      {
+        letter: 'Ю', letterName: 'Ю', type: 'vowel', word: 'Юліс', syllables: 'Ю - ліс', highlight: [0], creatureId: 'yulis',
+        facts: [
+          'Юліс — барвиста райдужна рибка, яку можна зустріти у Чорному та Середземному морях.',
+          'Вона розмальована яскравими червоними, синіми й жовтими смужками!'
+        ]
+      },
+      {
+        letter: 'Я', letterName: 'Я', type: 'vowel', word: 'Янгол морський', syllables: 'Ян - гол мор - ський', highlight: [0], creatureId: 'angelfish',
+        facts: [
+          'Морський янгол схожий на казкового метелика з красивими плавцями-крилами.',
+          'Він граціозно кружляє серед різнокольорових коралів.'
+        ]
+      }
+    ];
+
+    /* Список мешканців для живого Акваріума */
+    const AQUARIUM_SPECIES = [
+      { id: 'dolphin', name: 'Дельфін', letter: 'Д', speed: 1.45, scale: 1.05 },
+      { id: 'shark', name: 'Акула', letter: 'А', speed: 1.35, scale: 1.1 },
+      { id: 'beluga', name: 'Білуха', letter: 'Б', speed: 1.05, scale: 1.15 },
+      { id: 'octopus', name: 'Восьминіг', letter: 'В', speed: 0.9, scale: 1.0 },
+      { id: 'whale', name: 'Горбатий кит', letter: 'Г', speed: 0.85, scale: 1.28 },
+      { id: 'wrasse', name: 'Ґубань', letter: 'Ґ', speed: 1.1, scale: 0.9 },
+      { id: 'stingray', name: 'Скат', letter: 'С', speed: 1.15, scale: 1.1 },
+      { id: 'yellowtail', name: 'Жовтохвіст', letter: 'Ж', speed: 1.25, scale: 0.95 },
+      { id: 'starfish', name: 'Морська зірка', letter: 'З', speed: 0.55, scale: 0.85, bottomDweller: true },
+      { id: 'urchin', name: 'Морський їжак', letter: 'Ї', speed: 0.5, scale: 0.85, bottomDweller: true },
+      { id: 'crab', name: 'Краб', letter: 'К', speed: 0.75, scale: 0.88, bottomDweller: true },
+      { id: 'jellyfish', name: 'Медуза', letter: 'М', speed: 0.65, scale: 0.95 },
+      { id: 'narwhal', name: 'Нарвал', letter: 'Н', speed: 1.15, scale: 1.15 },
+      { id: 'penguin', name: 'Пінгвін', letter: 'П', speed: 1.35, scale: 0.95 },
+      { id: 'swordfish', name: 'Риба-меч', letter: 'Р', speed: 1.4, scale: 1.15 },
+      { id: 'seal', name: 'Тюлень', letter: 'Т', speed: 1.25, scale: 1.0 },
+      { id: 'pufferfish', name: 'Фугу', letter: 'Ф', speed: 0.95, scale: 0.9 },
+      { id: 'cichlid', name: 'Цихліда', letter: 'Ц', speed: 1.15, scale: 0.88 },
+      { id: 'turtle', name: 'Черепаха', letter: 'Ч', speed: 0.95, scale: 1.05 },
+      { id: 'yulis', name: 'Юліс', letter: 'Ю', speed: 1.2, scale: 0.88 },
+      { id: 'angelfish', name: 'Морський янгол', letter: 'Я', speed: 1.0, scale: 1.05 }
+    ];
+
+    /* Словник для вікторини «Хто сховався?» */
+    const QUIZ_POOL = [
+      { word: 'ДЕЛЬФІН', letter: 'Д', creatureId: 'dolphin' },
+      { word: 'АКУЛА', letter: 'А', creatureId: 'shark' },
+      { word: 'БІЛУХА', letter: 'Б', creatureId: 'beluga' },
+      { word: 'ВОСЬМИНІГ', letter: 'В', creatureId: 'octopus' },
+      { word: 'ҐУБАНЬ', letter: 'Ґ', creatureId: 'wrasse' },
+      { word: 'ЖОВТОХВІСТ', letter: 'Ж', creatureId: 'yellowtail' },
+      { word: 'ЗІРКА', letter: 'З', creatureId: 'starfish' },
+      { word: 'ЇЖАК', letter: 'Ї', creatureId: 'urchin' },
+      { word: 'КРАБ', letter: 'К', creatureId: 'crab' },
+      { word: 'МЕДУЗА', letter: 'М', creatureId: 'jellyfish' },
+      { word: 'НАРВАЛ', letter: 'Н', creatureId: 'narwhal' },
+      { word: 'ПІНГВІН', letter: 'П', creatureId: 'penguin' },
+      { word: 'СКАТ', letter: 'С', creatureId: 'stingray' },
+      { word: 'ТЮЛЕНЬ', letter: 'Т', creatureId: 'seal' },
+      { word: 'ФУГУ', letter: 'Ф', creatureId: 'pufferfish' },
+      { word: 'ХЕК', letter: 'Х', creatureId: 'hake' },
+      { word: 'ЦИХЛІДА', letter: 'Ц', creatureId: 'cichlid' },
+      { word: 'ЧЕРЕПАХА', letter: 'Ч', creatureId: 'turtle' },
+      { word: 'ЮЛІС', letter: 'Ю', creatureId: 'yulis' },
+      { word: 'ЯНГОЛ', letter: 'Я', creatureId: 'angelfish' }
+    ];
+
+    /* Словники для конструктора «Склади слово» */
+    const BUILDER_WORDS = {
+      easy: [
+        { word: 'КИТ', creatureId: 'whale' },
+        { word: 'ХЕК', creatureId: 'hake' },
+        { word: 'КРАБ', creatureId: 'crab' },
+        { word: 'СКАТ', creatureId: 'stingray' },
+        { word: 'ОМАР', creatureId: 'lobster' },
+        { word: 'ФУГУ', creatureId: 'pufferfish' },
+        { word: 'ЮЛІС', creatureId: 'yulis' },
+        { word: 'ЇЖАК', creatureId: 'urchin' }
+      ],
+      hard: [
+        { word: 'АКУЛА', creatureId: 'shark' },
+        { word: 'БІЛУХА', creatureId: 'beluga' },
+        { word: 'ҐУБАНЬ', creatureId: 'wrasse' },
+        { word: 'МЕДУЗА', creatureId: 'jellyfish' },
+        { word: 'НАРВАЛ', creatureId: 'narwhal' },
+        { word: 'ТЮЛЕНЬ', creatureId: 'seal' },
+        { word: 'ДЕЛЬФІН', creatureId: 'dolphin' },
+        { word: 'ПІНГВІН', creatureId: 'penguin' },
+        { word: 'ЦИХЛІДА', creatureId: 'cichlid' },
+        { word: 'ЧЕРЕПАХА', creatureId: 'turtle' }
+      ]
+    };
+
+    /* =========================================================================
+       3. СТАН ДОДАТКА ТА ЗБЕРЕЖЕННЯ ПРОГРЕСУ (localStorage)
+       ========================================================================= */
+    const STORAGE_KEY = 'morska_abetka_expedition_v2';
+
+    let appState = {
+      learnedLetters: [],
+      unlockedCreatures: ['dolphin'],
+      pearls: 0,
+      sfxEnabled: true,
+      preferredVoiceURI: 'auto',
+      speechRate: 0.88
+    };
+
+    function loadProgress() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          appState = {
+            learnedLetters: Array.isArray(parsed.learnedLetters) ? parsed.learnedLetters : [],
+            unlockedCreatures: Array.isArray(parsed.unlockedCreatures) && parsed.unlockedCreatures.length > 0
+              ? parsed.unlockedCreatures
+              : ['dolphin'],
+            pearls: typeof parsed.pearls === 'number' ? parsed.pearls : 0,
+            sfxEnabled: typeof parsed.sfxEnabled === 'boolean' ? parsed.sfxEnabled : true,
+            preferredVoiceURI: typeof parsed.preferredVoiceURI === 'string' ? parsed.preferredVoiceURI : 'auto',
+            speechRate: typeof parsed.speechRate === 'number' ? parsed.speechRate : 0.88
+          };
+        }
+      } catch (e) {
+        console.warn('Не вдалося завантажити прогрес:', e);
+      }
+    }
+
+    function saveProgress() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {}
+      updateHeaderUI();
+    }
+
+    /* =========================================================================
+       4. НАДІЙНИЙ ДВИГУН ЗВУКУ (SoundFX на базі Web Audio API)
+       ========================================================================= */
+    const SoundFX = {
+      ctx: null,
+
+      unlock() {
+        try {
+          if (!this.ctx) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) {
+              this.ctx = new AudioContextClass();
+            }
+          }
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+        } catch (e) {}
+        return this.ctx;
+      },
+
+      /* Водяна бульбашка */
+      playBubble(baseFreq = 390) {
+        if (!appState.sfxEnabled) return;
+        const ctx = this.unlock();
+        if (!ctx) return;
+        try {
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(baseFreq, now);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 2.15, now + 0.14);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.18, now + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.16);
+        } catch (e) {}
+      },
+
+      /* Нота марімби/ксилофона для кожної літери */
+      playLetterNote(index = 0) {
+        if (!appState.sfxEnabled) return;
+        const ctx = this.unlock();
+        if (!ctx) return;
+        const scale = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66];
+        const freq = scale[index % scale.length];
+        try {
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const overtone = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+          overtone.type = 'sine';
+          overtone.frequency.setValueAtTime(freq * 2, now);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.2, now + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.34);
+
+          osc.connect(gain);
+          overtone.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now);
+          overtone.start(now);
+          osc.stop(now + 0.35);
+          overtone.stop(now + 0.35);
+        } catch (e) {}
+      },
+
+      /* Підводний сонар / свист дельфіна для Акваріума */
+      playDolphinSonar() {
+        if (!appState.sfxEnabled) return;
+        const ctx = this.unlock();
+        if (!ctx) return;
+        try {
+          const now = ctx.currentTime;
+          // Свист дельфіна
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(950, now);
+          osc.frequency.exponentialRampToValueAtTime(1850, now + 0.09);
+          osc.frequency.exponentialRampToValueAtTime(1250, now + 0.18);
+          osc.frequency.exponentialRampToValueAtTime(2100, now + 0.27);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.14, now + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.29);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.3);
+
+          // М'який пінг сонара
+          const ping = ctx.createOscillator();
+          const pingGain = ctx.createGain();
+          ping.type = 'sine';
+          ping.frequency.setValueAtTime(1320, now + 0.05);
+          pingGain.gain.setValueAtTime(0.001, now + 0.05);
+          pingGain.gain.linearRampToValueAtTime(0.08, now + 0.07);
+          pingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+          ping.connect(pingGain);
+          pingGain.connect(ctx.destination);
+          ping.start(now + 0.05);
+          ping.stop(now + 0.46);
+        } catch (e) {}
+      },
+
+      /* Святковий акорд перемоги */
+      playSuccessChord() {
+        if (!appState.sfxEnabled) return;
+        const ctx = this.unlock();
+        if (!ctx) return;
+        try {
+          const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+          notes.forEach((freq, idx) => {
+            const start = ctx.currentTime + idx * 0.08;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.001, start);
+            gain.gain.linearRampToValueAtTime(0.18, start + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.42);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.44);
+          });
+        } catch (e) {}
+      },
+
+      /* М'який нейтральний звук при помилці */
+      playGentleNudge() {
+        if (!appState.sfxEnabled) return;
+        const ctx = this.unlock();
+        if (!ctx) return;
+        try {
+          [280, 235].forEach((freq, i) => {
+            const start = ctx.currentTime + i * 0.11;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.001, start);
+            gain.gain.linearRampToValueAtTime(0.13, start + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.12);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.13);
+          });
+        } catch (e) {}
+      },
+
+      /* Мелодійний фолбек, якщо speechSynthesis повністю заблоковано пісочницею iframe */
+      playFallbackChime() {
+        const ctx = this.unlock();
+        if (!ctx) return;
+        try {
+          [659.25, 880.00, 1046.50].forEach((freq, i) => {
+            const start = ctx.currentTime + i * 0.09;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.001, start);
+            gain.gain.linearRampToValueAtTime(0.15, start + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.28);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.3);
+          });
+        } catch (e) {}
+      }
+    };
+
+    /* =========================================================================
+       5. НАДІЙНИЙ ДВИГУН МОВЛЕННЯ SpeechEngine (ВИПРАВЛЕННЯ CHROME/WINDOWS/IFRAME)
+       ========================================================================= */
+    const SpeechEngine = {
+      voices: [],
+      selectedVoice: null,
+      isNativeUkrainian: false,
+      pollTimer: null,
+      speakTimeout: null,
+      watchdogTimer: null,
+
+      init() {
+        if (!('speechSynthesis' in window)) {
+          this.updateStatusUI();
+          return;
+        }
+
+        const loadVoices = () => {
+          const list = window.speechSynthesis.getVoices();
+          if (list && list.length > 0) {
+            this.voices = list;
+            this.resolveVoice();
+            this.populateSettingsDropdown();
+            this.updateStatusUI();
+          }
+        };
+
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+
+        // Інтервальний опитувальник кожні 250 мс протягом 3.5 секунд (рятує в iframe!)
+        let attempts = 0;
+        clearInterval(this.pollTimer);
+        this.pollTimer = setInterval(() => {
+          attempts++;
+          loadVoices();
+          if ((this.voices.length > 0 && attempts >= 4) || attempts >= 14) {
+            clearInterval(this.pollTimer);
+          }
+        }, 250);
+      },
+
+      /* Розумний вибір голосу з пріоритетом uk -> найкращий системний голос */
+      resolveVoice() {
+        if (!this.voices || this.voices.length === 0) {
+          this.selectedVoice = null;
+          this.isNativeUkrainian = false;
+          return;
+        }
+
+        // Якщо батьки вручну обрали конкретний голос у налаштуваннях
+        if (appState.preferredVoiceURI && appState.preferredVoiceURI !== 'auto') {
+          const manual = this.voices.find(v => v.voiceURI === appState.preferredVoiceURI);
+          if (manual) {
+            this.selectedVoice = manual;
+            this.isNativeUkrainian = manual.lang.toLowerCase().startsWith('uk');
+            return;
+          }
+        }
+
+        // Пріоритет 1: Рідний український голос (Google українська, Microsoft Ostap/Lesya тощо)
+        const ukVoices = this.voices.filter(v => v.lang.toLowerCase().startsWith('uk'));
+        if (ukVoices.length > 0) {
+          const preferredUk = ukVoices.find(v =>
+            v.name.toLowerCase().includes('google') ||
+            v.name.toLowerCase().includes('ostap') ||
+            v.name.toLowerCase().includes('lesya') ||
+            v.name.toLowerCase().includes('natural')
+          ) || ukVoices[0];
+
+          this.selectedVoice = preferredUk;
+          this.isNativeUkrainian = true;
+          return;
+        }
+
+        // Пріоритет 2: Фонетичний авто-фолбек на найкращий доступний голос ОС (щоб не було тиші на Windows!)
+        this.isNativeUkrainian = false;
+        const fallbackLangs = ['pl', 'cs', 'sk', 'hr', 'en-us', 'en-gb', 'en', 'de', 'fr', 'es'];
+        for (const prefix of fallbackLangs) {
+          const match = this.voices.find(v => v.lang.toLowerCase().startsWith(prefix));
+          if (match) {
+            this.selectedVoice = match;
+            return;
+          }
+        }
+
+        this.selectedVoice = this.voices[0];
+      },
+
+      /* Фонетичний транслітератор українського тексту для вимови системним голосом,
+         якщо на Windows не встановлено мовний пакет uk-UA */
+      transliterateToPhonetic(text) {
+        const map = {
+          'А': 'A', 'а': 'a',
+          'Б': 'B', 'б': 'b',
+          'В': 'V', 'в': 'v',
+          'Г': 'H', 'г': 'h',
+          'Ґ': 'G', 'ґ': 'g',
+          'Д': 'D', 'д': 'd',
+          'Е': 'Eh', 'е': 'e',
+          'Є': 'Ye', 'є': 'ye',
+          'Ж': 'Zh', 'ж': 'zh',
+          'З': 'Z', 'з': 'z',
+          'И': 'Y', 'и': 'y',
+          'І': 'Ee', 'і': 'ee',
+          'Ї': 'Yee', 'ї': 'yee',
+          'Й': 'Y', 'й': 'y',
+          'К': 'K', 'к': 'k',
+          'Л': 'L', 'л': 'l',
+          'М': 'M', 'м': 'm',
+          'Н': 'N', 'н': 'n',
+          'О': 'O', 'о': 'o',
+          'П': 'P', 'п': 'p',
+          'Р': 'R', 'р': 'r',
+          'С': 'S', 'с': 's',
+          'Т': 'T', 'т': 't',
+          'У': 'Oo', 'у': 'oo',
+          'Ф': 'F', 'ф': 'f',
+          'Х': 'Kh', 'х': 'kh',
+          'Ц': 'Ts', 'ц': 'ts',
+          'Ч': 'Ch', 'ч': 'ch',
+          'Ш': 'Sh', 'ш': 'sh',
+          'Щ': 'Shch', 'щ': 'shch',
+          'Ь': "'", 'ь': "'",
+          'Ю': 'Yu', 'ю': 'yu',
+          'Я': 'Ya', 'я': 'ya',
+          '’': '', 'ʼ': ''
+        };
+
+        return Array.from(text).map(ch => (ch in map ? map[ch] : ch)).join('');
+      },
+
+      /* Головний метод озвучення */
+      speak(ukrainianText, options = {}) {
+        SoundFX.unlock();
+
+        if (!('speechSynthesis' in window)) {
+          SoundFX.playFallbackChime();
+          return;
+        }
+
+        // Якщо голоси ще не підвантажилися — спробуємо оновити прямо зараз
+        if (this.voices.length === 0) {
+          const fresh = window.speechSynthesis.getVoices();
+          if (fresh && fresh.length > 0) {
+            this.voices = fresh;
+            this.resolveVoice();
+          }
+        }
+
+        clearTimeout(this.speakTimeout);
+        clearTimeout(this.watchdogTimer);
+
+        const synth = window.speechSynthesis;
+        const wasBusy = synth.speaking || synth.pending;
+
+        if (wasBusy) {
+          try { synth.cancel(); } catch (e) {}
+        }
+
+        // Затримка 60 мс після cancel(), щоб Chrome не проковтнув новий speak()
+        const delay = wasBusy ? 65 : 0;
+
+        this.speakTimeout = setTimeout(() => {
+          try {
+            // Лікуємо зависання паузи в Chromium
+            if (synth.paused) {
+              synth.resume();
+            }
+
+            // Визначаємо, чи треба використовувати фонетичний режим
+            const useNative = this.isNativeUkrainian || !this.selectedVoice;
+            const preparedText = useNative
+              ? ukrainianText
+              : this.transliterateToPhonetic(ukrainianText);
+
+            const utterance = new SpeechSynthesisUtterance(preparedText);
+
+            if (this.selectedVoice) {
+              utterance.voice = this.selectedVoice;
+              utterance.lang = this.selectedVoice.lang;
+            } else {
+              utterance.lang = 'uk-UA';
+            }
+
+            const baseRate = options.rate || appState.speechRate || 0.88;
+            utterance.rate = useNative ? baseRate : Math.max(0.75, baseRate * 0.94);
+            utterance.pitch = options.pitch || 1.08;
+            utterance.volume = 1.0;
+
+            // Зберігаємо у глобальну змінну, щоб збирач сміття Chrome не обривав мовлення
+            window.__activeUtterance = utterance;
+
+            const testBtn = document.getElementById('testSoundBtn');
+            let started = false;
+
+            utterance.onstart = () => {
+              started = true;
+              clearTimeout(this.watchdogTimer);
+              if (testBtn) testBtn.classList.add('speaking-active');
+            };
+
+            utterance.onend = () => {
+              clearTimeout(this.watchdogTimer);
+              window.__activeUtterance = null;
+              if (testBtn) testBtn.classList.remove('speaking-active');
+            };
+
+            utterance.onerror = () => {
+              clearTimeout(this.watchdogTimer);
+              window.__activeUtterance = null;
+              if (testBtn) testBtn.classList.remove('speaking-active');
+              if (!started) {
+                SoundFX.playFallbackChime();
+              }
+            };
+
+            // Таймер контролю onstart (500 мс): якщо браузер/iframe блокує мовлення, граємо мелодію
+            this.watchdogTimer = setTimeout(() => {
+              if (!started) {
+                SoundFX.playFallbackChime();
+              }
+            }, 520);
+
+            synth.resume();
+            synth.speak(utterance);
+          } catch (err) {
+            SoundFX.playFallbackChime();
+          }
+        }, delay);
+      },
+
+      stop() {
+        clearTimeout(this.speakTimeout);
+        clearTimeout(this.watchdogTimer);
+        window.__activeUtterance = null;
+        const testBtn = document.getElementById('testSoundBtn');
+        if (testBtn) testBtn.classList.remove('speaking-active');
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch (e) {}
+        }
+      },
+
+      populateSettingsDropdown() {
+        const select = document.getElementById('voiceSelectDropdown');
+        if (!select) return;
+
+        const currentVal = appState.preferredVoiceURI || 'auto';
+        select.innerHTML = `<option value="auto">✨ Автоматичний вибір (Рекомендовано)</option>`;
+
+        this.voices.forEach(voice => {
+          const opt = document.createElement('option');
+          opt.value = voice.voiceURI;
+          const isUk = voice.lang.toLowerCase().startsWith('uk');
+          opt.textContent = `${isUk ? '🇺🇦 ' : ''}${voice.name} (${voice.lang})`;
+          select.appendChild(opt);
+        });
+
+        select.value = currentVal;
+      },
+
+      updateStatusUI() {
+        const box = document.getElementById('voiceEngineStatusBox');
+        if (!box) return;
+
+        if (!('speechSynthesis' in window) || this.voices.length === 0) {
+          box.className = 'rounded-2xl p-3.5 mb-4 border text-xs sm:text-sm font-bold leading-relaxed bg-amber-950/70 border-amber-400/50 text-amber-100';
+          box.innerHTML = `
+            ⚠️ Браузер ще завантажує або обмежує системні голоси. Усі звукові ефекти бульбашок та ксилофона працюють автономно!
+          `;
+          return;
+        }
+
+        if (this.isNativeUkrainian && this.selectedVoice) {
+          box.className = 'rounded-2xl p-3.5 mb-4 border text-xs sm:text-sm font-bold leading-relaxed bg-emerald-950/70 border-emerald-400/50 text-emerald-100';
+          box.innerHTML = `
+            ✅ <strong>Знайдено рідний український голос:</strong> ${this.selectedVoice.name} (${this.selectedVoice.lang}). Озвучування працює на повну!
+          `;
+        } else if (this.selectedVoice) {
+          box.className = 'rounded-2xl p-3.5 mb-4 border text-xs sm:text-sm font-bold leading-relaxed bg-sky-950/85 border-amber-300/60 text-cyan-100';
+          box.innerHTML = `
+            🔄 <strong>Увімкнено розумний фонетичний режим</strong> через голос <em>${this.selectedVoice.name}</em>, оскільки в Windows/браузері не встановлено український мовний пакет (<code>uk-UA</code>). Слова автоматично озвучуються зрозумілою фонетикою!
+          `;
+        }
+      }
+    };
+
+    /* Кнопка «Перевірити звук» у верхній шапці */
+    function testSoundAndGreet() {
+      SoundFX.unlock();
+      SoundFX.playBubble(480);
+
+      // Створюємо додаткові веселі бульбашки на екрані
+      const container = document.getElementById('bgBubbles');
+      for (let i = 0; i < 8; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble-particle';
+        const size = 14 + Math.random() * 20;
+        b.style.width = `${size}px`;
+        b.style.height = `${size}px`;
+        b.style.left = `${20 + Math.random() * 60}%`;
+        b.style.animationDuration = '3.5s';
+        container.appendChild(b);
+        setTimeout(() => b.remove(), 3600);
+      }
+
+      SpeechEngine.speak('Привіт! Поїхали в підводну експедицію!');
+      showToast('Привіт! Поїхали в підводну експедицію!', '🐬');
+    }
+
+    /* Керування модальним вікном налаштувань голосу */
+    function openVoiceSettings() {
+      SoundFX.playBubble(420);
+      SpeechEngine.populateSettingsDropdown();
+      SpeechEngine.updateStatusUI();
+      updateSettingsButtonsUI();
+
+      const modal = document.getElementById('voiceSettingsModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeVoiceSettings() {
+      SoundFX.playBubble(340);
+      const modal = document.getElementById('voiceSettingsModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function onVoiceDropdownChange() {
+      const select = document.getElementById('voiceSelectDropdown');
+      appState.preferredVoiceURI = select.value;
+      SpeechEngine.resolveVoice();
+      SpeechEngine.updateStatusUI();
+      saveProgress();
+      SpeechEngine.speak('Привіт! Перевіряємо новий голос!');
+    }
+
+    function setSpeechRate(rate) {
+      SoundFX.playBubble(440);
+      appState.speechRate = rate;
+      saveProgress();
+      updateSettingsButtonsUI();
+      SpeechEngine.speak(rate < 0.9 ? 'Повільна швидкість для навчання' : 'Звичайна швидкість');
+    }
+
+    function toggleSfxSetting() {
+      appState.sfxEnabled = !appState.sfxEnabled;
+      saveProgress();
+      updateSettingsButtonsUI();
+      if (appState.sfxEnabled) {
+        SoundFX.playBubble(460);
+      }
+    }
+
+    function updateSettingsButtonsUI() {
+      const slowBtn = document.getElementById('rate-btn-slow');
+      const normBtn = document.getElementById('rate-btn-normal');
+      if (appState.speechRate <= 0.85) {
+        slowBtn.className = 'btn-3d py-2.5 px-3 rounded-2xl font-extrabold text-sm border-2 bg-gradient-to-b from-amber-300 to-amber-500 text-amber-950 border-amber-100';
+        normBtn.className = 'btn-3d py-2.5 px-3 rounded-2xl font-extrabold text-sm border-2 bg-gradient-to-b from-sky-500 to-sky-700 text-white border-sky-300/60';
+      } else {
+        normBtn.className = 'btn-3d py-2.5 px-3 rounded-2xl font-extrabold text-sm border-2 bg-gradient-to-b from-amber-300 to-amber-500 text-amber-950 border-amber-100';
+        slowBtn.className = 'btn-3d py-2.5 px-3 rounded-2xl font-extrabold text-sm border-2 bg-gradient-to-b from-sky-500 to-sky-700 text-white border-sky-300/60';
+      }
+
+      const sfxBtn = document.getElementById('sfxToggleBtn');
+      if (appState.sfxEnabled) {
+        sfxBtn.textContent = 'Увімкнено';
+        sfxBtn.className = 'btn-3d px-4 py-2 rounded-xl font-black text-sm bg-gradient-to-b from-emerald-400 to-emerald-600 text-white border-2 border-emerald-200';
+      } else {
+        sfxBtn.textContent = 'Вимкнено';
+        sfxBtn.className = 'btn-3d px-4 py-2 rounded-xl font-black text-sm bg-gradient-to-b from-slate-500 to-slate-700 text-slate-200 border-2 border-slate-400';
+      }
+    }
+
+    /* =========================================================================
+       6. ОНОВЛЕННЯ ШАПКИ ТА СИСТЕМИ НАГОРОД
+       ========================================================================= */
+    let toastTimer = null;
+    function showToast(text, icon = '🌟') {
+      const banner = document.getElementById('toastBanner');
+      document.getElementById('toastText').textContent = text;
+      document.getElementById('toastIcon').textContent = icon;
+      banner.classList.remove('opacity-0', 'translate-y-4');
+      banner.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        banner.classList.remove('opacity-100', 'translate-y-0');
+        banner.classList.add('opacity-0', 'translate-y-4');
+      }, 2800);
+    }
+
+    function addPearls(amount) {
+      appState.pearls += amount;
+      saveProgress();
+    }
+
+    function unlockCreature(creatureId, notify = true) {
+      const validSpecies = AQUARIUM_SPECIES.find(s => s.id === creatureId);
+      if (!validSpecies) return false;
+
+      if (!appState.unlockedCreatures.includes(creatureId)) {
+        appState.unlockedCreatures.push(creatureId);
+        saveProgress();
+        syncAquariumEntities();
+        if (notify) {
+          showToast(`Новий друг в Акваріумі: ${validSpecies.name}!`, '🐠');
+        }
+        return true;
+      }
+      return false;
+    }
+
+    function updateHeaderUI() {
+      document.getElementById('pearlCount').textContent = appState.pearls;
+      document.getElementById('learnedCount').textContent = appState.learnedLetters.length;
+      document.getElementById('aquariumBadge').textContent = appState.unlockedCreatures.length;
+
+      const totalScore = appState.learnedLetters.length + appState.pearls;
+      let rank = 'Юнга Океану';
+      if (totalScore >= 85) rank = 'Володар Морів 👑';
+      else if (totalScore >= 45) rank = 'Капітан Батискафа 🚢';
+      else if (totalScore >= 20) rank = 'Дослідник Рифів 🤿';
+      else if (totalScore >= 8) rank = 'Морський Матрос ⚓';
+      document.getElementById('explorerRank').textContent = rank;
+    }
+
+    /* =========================================================================
+       7. ПЕРЕМИКАННЯ ВКЛАДОК
+       ========================================================================= */
+    let currentTab = 'alphabet';
+
+    function switchTab(tabName) {
+      SoundFX.playBubble(370);
+      currentTab = tabName;
+
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('from-amber-300', 'to-amber-500', 'text-amber-950', 'border-amber-100');
+        btn.classList.add('from-sky-500', 'to-sky-700', 'text-white', 'border-sky-300/60');
+      });
+
+      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+      activeBtn.classList.remove('from-sky-500', 'to-sky-700', 'text-white', 'border-sky-300/60');
+      activeBtn.classList.add('from-amber-300', 'to-amber-500', 'text-amber-950', 'border-amber-100');
+
+      if (tabName === 'alphabet') {
+        renderAlphabetGrid();
+      } else if (tabName === 'quiz') {
+        if (!currentQuizItem) nextQuizQuestion();
+      } else if (tabName === 'builder') {
+        if (!currentBuilderItem) nextBuilderWord();
+      } else if (tabName === 'aquarium') {
+        resizeAquariumCanvas();
+        renderAquariumCollectionBar();
+      }
+    }
+
+    /* =========================================================================
+       8. ВКЛАДКА 1: «АБЕТКА ОКЕАНУ» (33 ЛІТЕРИ + 3 КНОПКИ ОЗВУЧЕННЯ В КАРТЦІ)
+       ========================================================================= */
+    let activeModalIndex = 0;
+
+    function renderAlphabetGrid() {
+      const grid = document.getElementById('alphabetGrid');
+      grid.innerHTML = '';
+
+      ALPHABET_DATA.forEach((item, index) => {
+        const isLearned = appState.learnedLetters.includes(item.letter);
+
+        let cardGradient = 'from-sky-400 to-sky-600 border-sky-200/80 text-white';
+        if (item.type === 'vowel') {
+          cardGradient = 'from-rose-400 to-rose-600 border-rose-200/85 text-white';
+        } else if (item.type === 'sign') {
+          cardGradient = 'from-teal-400 to-teal-600 border-teal-200/85 text-white';
+        }
+
+        const btn = document.createElement('button');
+        btn.className = `btn-3d relative rounded-2xl p-2 sm:p-3 bg-gradient-to-b ${cardGradient} border-2 flex flex-col items-center justify-center aspect-square`;
+        btn.onclick = () => openLetterModal(index);
+
+        btn.innerHTML = `
+          ${isLearned ? '<span class="absolute top-1 right-1.5 text-xs sm:text-sm drop-shadow">⭐</span>' : ''}
+          <span class="text-2xl sm:text-3xl md:text-4xl font-black leading-none drop-shadow">${item.letter}</span>
+          <span class="text-[10px] sm:text-xs font-extrabold opacity-95 mt-1 truncate max-w-full">${item.word.split(' ')[0]}</span>
+        `;
+        grid.appendChild(btn);
+      });
+    }
+
+    function openLetterModal(index) {
+      activeModalIndex = (index + ALPHABET_DATA.length) % ALPHABET_DATA.length;
+      const item = ALPHABET_DATA[activeModalIndex];
+
+      SoundFX.playLetterNote(activeModalIndex);
+
+      const firstTime = !appState.learnedLetters.includes(item.letter);
+      if (firstTime) {
+        appState.learnedLetters.push(item.letter);
+        addPearls(1);
+        renderAlphabetGrid();
+      }
+      unlockCreature(item.creatureId, firstTime);
+
+      document.getElementById('modalBigLetter').textContent = `${item.letter} ${item.letter.toLowerCase()}`;
+
+      const typeBadge = document.getElementById('modalLetterType');
+      if (item.type === 'vowel') {
+        typeBadge.textContent = 'Голосна';
+        typeBadge.className = 'text-xs sm:text-sm font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-rose-500/40 text-rose-100 border border-rose-300/60';
+      } else if (item.type === 'sign') {
+        typeBadge.textContent = 'М’який знак';
+        typeBadge.className = 'text-xs sm:text-sm font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-teal-500/40 text-teal-100 border border-teal-300/60';
+      } else {
+        typeBadge.textContent = 'Приголосна';
+        typeBadge.className = 'text-xs sm:text-sm font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-sky-500/40 text-sky-100 border border-sky-300/60';
+      }
+
+      document.getElementById('modalCreatureArt').innerHTML = CREATURE_SVGS[item.creatureId] || CREATURE_SVGS.dolphin;
+
+      const highlightedHtml = Array.from(item.word).map((char, idx) => {
+        if (item.highlight.includes(idx)) {
+          return `<span class="inline-block px-1.5 py-0.5 mx-0.5 rounded-xl bg-amber-300 text-amber-950 shadow-md transform scale-110">${char}</span>`;
+        }
+        return `<span>${char}</span>`;
+      }).join('');
+      document.getElementById('modalWordHighlighted').innerHTML = highlightedHtml;
+
+      const factsList = document.getElementById('modalFactsList');
+      factsList.innerHTML = item.facts.map(f => `
+        <li class="flex items-start gap-2">
+          <span class="text-cyan-300 mt-0.5">🐚</span>
+          <span>${f}</span>
+        </li>
+      `).join('');
+
+      const modal = document.getElementById('letterModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      // Одразу озвучуємо назву та букву
+      speakModalNameAndLetter();
+    }
+
+    function closeLetterModal() {
+      SoundFX.playBubble(320);
+      SpeechEngine.stop();
+      const modal = document.getElementById('letterModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function speakModalNameAndLetter() {
+      const item = ALPHABET_DATA[activeModalIndex];
+      if (!item) return;
+      SoundFX.playBubble(460);
+      if (item.letter === 'Ь') {
+        SpeechEngine.speak(`М’який знак! Слово: ${item.word}!`);
+      } else if (item.letter === 'И') {
+        SpeechEngine.speak(`Літера ${item.letterName} у слові ${item.word}!`);
+      } else {
+        SpeechEngine.speak(`Літера ${item.letterName}! ${item.word}!`);
+      }
+    }
+
+    function speakModalSyllables() {
+      const item = ALPHABET_DATA[activeModalIndex];
+      if (!item) return;
+      SoundFX.playBubble(400);
+      SpeechEngine.speak(item.syllables, { rate: 0.65 });
+    }
+
+    function speakModalFacts() {
+      const item = ALPHABET_DATA[activeModalIndex];
+      if (!item) return;
+      SoundFX.playBubble(440);
+      SpeechEngine.speak(item.facts.join(' '));
+    }
+
+    function navigateModalLetter(step) {
+      openLetterModal(activeModalIndex + step);
+    }
+
+    /* =========================================================================
+       9. ВКЛАДКА 2: «ХТО СХОВАВСЯ?» (ВІКТОРИНА НА ПЕРШУ ЛІТЕРУ)
+       ========================================================================= */
+    let currentQuizItem = null;
+    let quizSolved = false;
+    let lastQuizWord = '';
+
+    function nextQuizQuestion() {
+      SoundFX.playBubble(400);
+      quizSolved = false;
+      document.getElementById('quizNextContainer').classList.add('hidden');
+      document.getElementById('quizFeedback').textContent = 'З якої літери починається назва? Обери бульбашку!';
+      document.getElementById('quizFeedback').className = 'text-base sm:text-xl font-extrabold text-amber-200 min-h-[2rem] mb-4';
+
+      const candidates = QUIZ_POOL.filter(q => q.word !== lastQuizWord);
+      currentQuizItem = candidates[Math.floor(Math.random() * candidates.length)];
+      lastQuizWord = currentQuizItem.word;
+
+      document.getElementById('quizCreatureArt').innerHTML = CREATURE_SVGS[currentQuizItem.creatureId];
+      renderQuizWord(false);
+
+      const allLetters = ['А', 'Б', 'В', 'Ґ', 'Д', 'Ж', 'З', 'Ї', 'К', 'М', 'Н', 'П', 'С', 'Т', 'Ф', 'Х', 'Ц', 'Ч', 'Ю', 'Я'];
+      const distractors = allLetters
+        .filter(l => l !== currentQuizItem.letter)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+
+      const options = [currentQuizItem.letter, ...distractors].sort(() => Math.random() - 0.5);
+
+      const optionsContainer = document.getElementById('quizOptions');
+      optionsContainer.innerHTML = '';
+
+      options.forEach(letter => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-3d rounded-3xl py-4 sm:py-5 bg-gradient-to-b from-cyan-300 via-sky-400 to-sky-600 text-sky-950 font-black text-3xl sm:text-4xl border-4 border-white/80 shadow-xl';
+        btn.textContent = letter;
+        btn.onclick = () => handleQuizChoice(letter, btn);
+        optionsContainer.appendChild(btn);
+      });
+
+      setTimeout(() => {
+        if (currentTab === 'quiz') {
+          speakQuizPrompt();
+        }
+      }, 200);
+    }
+
+    function speakQuizPrompt() {
+      if (!currentQuizItem) return;
+      SoundFX.playBubble(430);
+      SpeechEngine.speak(`Хто це? З якої літери починається слово ${currentQuizItem.word}?`);
+    }
+
+    function renderQuizWord(revealed) {
+      const container = document.getElementById('quizWordDisplay');
+      const letters = Array.from(currentQuizItem.word);
+
+      container.innerHTML = letters.map((char, idx) => {
+        if (idx === 0) {
+          if (revealed) {
+            return `<span class="animate-pop w-12 h-14 sm:w-16 sm:h-18 rounded-2xl bg-gradient-to-b from-amber-300 to-amber-500 text-amber-950 border-4 border-white font-black text-3xl sm:text-4xl flex items-center justify-center shadow-lg">${char}</span>`;
+          } else {
+            return `<span class="w-12 h-14 sm:w-16 sm:h-18 rounded-2xl bg-sky-950/80 text-amber-300 border-4 border-dashed border-amber-300 font-black text-3xl sm:text-4xl flex items-center justify-center animate-pulse">?</span>`;
+          }
+        }
+        return `<span class="w-10 h-12 sm:w-14 sm:h-16 rounded-2xl bg-sky-800/80 text-white border-2 border-cyan-300/50 font-black text-2xl sm:text-3xl flex items-center justify-center shadow">${char}</span>`;
+      }).join('');
+    }
+
+    function getLetterSpokenName(letter) {
+      const found = ALPHABET_DATA.find(item => item.letter === letter);
+      return found ? found.letterName : letter;
+    }
+
+    function handleQuizChoice(chosenLetter, btnElement) {
+      if (quizSolved) return;
+
+      const spokenLetter = getLetterSpokenName(chosenLetter);
+
+      if (chosenLetter === currentQuizItem.letter) {
+        quizSolved = true;
+        SoundFX.playSuccessChord();
+        renderQuizWord(true);
+
+        btnElement.className = 'animate-pop rounded-3xl py-4 sm:py-5 bg-gradient-to-b from-emerald-300 to-emerald-500 text-emerald-950 font-black text-3xl sm:text-4xl border-4 border-white shadow-xl';
+
+        document.getElementById('quizFeedback').textContent = `🎉 Молодець! Це ${currentQuizItem.word}! (+2 перлини)`;
+        document.getElementById('quizFeedback').className = 'text-lg sm:text-2xl font-black text-emerald-300 min-h-[2rem] mb-4 animate-pop';
+
+        addPearls(2);
+        unlockCreature(currentQuizItem.creatureId, true);
+
+        document.getElementById('quizNextContainer').classList.remove('hidden');
+        SpeechEngine.speak(`Молодець! Це ${currentQuizItem.word}! Перша літера ${spokenLetter}!`);
+      } else {
+        SoundFX.playGentleNudge();
+        btnElement.classList.remove('animate-wobble');
+        void btnElement.offsetWidth;
+        btnElement.classList.add('animate-wobble');
+        btnElement.classList.add('opacity-55');
+
+        document.getElementById('quizFeedback').textContent = `Це літера «${chosenLetter}». Спробуй іншу бульбашку для слова ${currentQuizItem.word}!`;
+        SpeechEngine.speak(`Це літера ${spokenLetter}. Спробуй ще раз!`);
+      }
+    }
+
+    /* =========================================================================
+       10. ВКЛАДКА 3: «СКЛАДИ СЛОВО» (КОНСТРУКТОР З ОЗВУЧЕННЯМ КОЖНОЇ ЛІТЕРИ)
+       ========================================================================= */
+    let builderDifficulty = 'easy';
+    let currentBuilderItem = null;
+    let builderSlotsState = [];
+    let builderPoolTiles = [];
+    let builderSolved = false;
+    let lastBuilderWord = '';
+
+    function setBuilderDifficulty(level) {
+      SoundFX.playBubble(420);
+      builderDifficulty = level;
+
+      const easyBtn = document.getElementById('diff-easy');
+      const hardBtn = document.getElementById('diff-hard');
+
+      if (level === 'easy') {
+        easyBtn.className = 'px-3.5 py-1.5 rounded-xl font-extrabold text-xs sm:text-sm transition bg-amber-400 text-amber-950 shadow';
+        hardBtn.className = 'px-3.5 py-1.5 rounded-xl font-extrabold text-xs sm:text-sm transition text-cyan-200 hover:text-white';
+      } else {
+        hardBtn.className = 'px-3.5 py-1.5 rounded-xl font-extrabold text-xs sm:text-sm transition bg-amber-400 text-amber-950 shadow';
+        easyBtn.className = 'px-3.5 py-1.5 rounded-xl font-extrabold text-xs sm:text-sm transition text-cyan-200 hover:text-white';
+      }
+
+      nextBuilderWord();
+    }
+
+    function nextBuilderWord() {
+      SoundFX.playBubble(390);
+      builderSolved = false;
+      document.getElementById('builderNextContainer').classList.add('hidden');
+      document.getElementById('builderFeedback').textContent = 'Натискай на мушлі з літерами по порядку, щоб скласти слово!';
+      document.getElementById('builderFeedback').className = 'text-base sm:text-lg font-extrabold text-cyan-100 min-h-[1.75rem] my-2';
+
+      const pool = BUILDER_WORDS[builderDifficulty].filter(w => w.word !== lastBuilderWord);
+      currentBuilderItem = pool[Math.floor(Math.random() * pool.length)];
+      lastBuilderWord = currentBuilderItem.word;
+
+      document.getElementById('builderCreatureArt').innerHTML = CREATURE_SVGS[currentBuilderItem.creatureId];
+
+      const chars = Array.from(currentBuilderItem.word);
+      builderSlotsState = new Array(chars.length).fill(null);
+
+      let shuffled = chars.map((char, idx) => ({ id: idx, char, used: false }));
+      do {
+        shuffled.sort(() => Math.random() - 0.5);
+      } while (shuffled.map(t => t.char).join('') === currentBuilderItem.word && chars.length > 1);
+
+      builderPoolTiles = shuffled;
+      renderBuilderBoard();
+
+      setTimeout(() => {
+        if (currentTab === 'builder') {
+          SpeechEngine.speak(`Склади слово: ${currentBuilderItem.word}`);
+        }
+      }, 200);
+    }
+
+    function renderBuilderBoard(hintTileId = null) {
+      const slotsEl = document.getElementById('builderSlots');
+      const poolEl = document.getElementById('builderPool');
+
+      const nextEmptyIdx = builderSlotsState.findIndex(s => s === null);
+
+      slotsEl.innerHTML = builderSlotsState.map((tile, idx) => {
+        if (tile) {
+          const solvedStyle = builderSolved
+            ? 'from-emerald-300 to-emerald-500 text-emerald-950 border-white animate-pop'
+            : 'from-amber-300 to-amber-500 text-amber-950 border-amber-100 cursor-pointer';
+          return `
+            <button onclick="removeBuilderLetter(${idx})" class="btn-3d w-12 h-14 sm:w-14 sm:h-16 rounded-2xl bg-gradient-to-b ${solvedStyle} border-2 font-black text-2xl sm:text-3xl flex items-center justify-center">
+              ${tile.char}
+            </button>
+          `;
+        } else {
+          const isNextTarget = idx === nextEmptyIdx;
+          return `
+            <div class="w-12 h-14 sm:w-14 sm:h-16 rounded-2xl bg-sky-950/75 border-3 ${isNextTarget ? 'border-amber-300 shadow-inner' : 'border-cyan-400/40'} border-dashed flex items-center justify-center text-cyan-400/40 font-black text-xl">
+              ${idx + 1}
+            </div>
+          `;
+        }
+      }).join('');
+
+      poolEl.innerHTML = builderPoolTiles.map(tile => {
+        if (tile.used) {
+          return `<div class="w-13 h-13 sm:w-16 sm:h-16 rounded-full bg-sky-950/40 border-2 border-cyan-500/20"></div>`;
+        }
+        const hintClass = tile.id === hintTileId ? 'hint-glow' : '';
+        return `
+          <button onclick="selectBuilderTile(${tile.id})" class="btn-3d ${hintClass} w-13 h-13 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-cyan-300 via-sky-400 to-sky-600 text-sky-950 font-black text-2xl sm:text-3xl border-4 border-white/80 flex items-center justify-center shadow-lg">
+            ${tile.char}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectBuilderTile(tileId) {
+      if (builderSolved) return;
+      const nextSlotIdx = builderSlotsState.findIndex(s => s === null);
+      if (nextSlotIdx === -1) return;
+
+      const tile = builderPoolTiles.find(t => t.id === tileId);
+      if (!tile || tile.used) return;
+
+      SoundFX.playLetterNote(nextSlotIdx);
+      tile.used = true;
+      builderSlotsState[nextSlotIdx] = tile;
+
+      renderBuilderBoard();
+
+      const isLastLetter = !builderSlotsState.includes(null);
+      if (!isLastLetter) {
+        // Озвучуємо кожну натиснуту літеру
+        SpeechEngine.speak(getLetterSpokenName(tile.char));
+      }
+
+      checkBuilderCompletion();
+    }
+
+    function removeBuilderLetter(slotIdx) {
+      if (builderSolved) return;
+      const tile = builderSlotsState[slotIdx];
+      if (!tile) return;
+
+      SoundFX.playBubble(310);
+      tile.used = false;
+      builderSlotsState[slotIdx] = null;
+      renderBuilderBoard();
+    }
+
+    function useBuilderHint() {
+      if (builderSolved) return;
+      const nextSlotIdx = builderSlotsState.findIndex(s => s === null);
+      if (nextSlotIdx === -1) return;
+
+      const neededChar = Array.from(currentBuilderItem.word)[nextSlotIdx];
+      const matchingTile = builderPoolTiles.find(t => !t.used && t.char === neededChar);
+
+      if (matchingTile) {
+        SoundFX.playBubble(540);
+        renderBuilderBoard(matchingTile.id);
+        SpeechEngine.speak(`Наступна літера — ${getLetterSpokenName(neededChar)}`);
+      }
+    }
+
+    function checkBuilderCompletion() {
+      if (builderSlotsState.includes(null)) return;
+
+      const assembledWord = builderSlotsState.map(t => t.char).join('');
+      if (assembledWord === currentBuilderItem.word) {
+        builderSolved = true;
+        SoundFX.playSuccessChord();
+        renderBuilderBoard();
+
+        document.getElementById('builderFeedback').textContent = `🌟 Чудово! Слово «${currentBuilderItem.word}» зібрано! (+3 перлини)`;
+        document.getElementById('builderFeedback').className = 'text-lg sm:text-xl font-black text-emerald-300 min-h-[1.75rem] my-2 animate-pop';
+
+        addPearls(3);
+        unlockCreature(currentBuilderItem.creatureId, true);
+
+        document.getElementById('builderNextContainer').classList.remove('hidden');
+        SpeechEngine.speak(`Чудово! Ти склав слово ${currentBuilderItem.word}!`);
+      } else {
+        SoundFX.playGentleNudge();
+        document.getElementById('builderFeedback').textContent = 'Майже вийшло! Натисни на літеру вгорі, щоб поміняти місцями.';
+        SpeechEngine.speak('Перевір порядок літер, ти майже зібрав слово!');
+      }
+    }
+
+    function speakBuilderWord() {
+      if (currentBuilderItem) {
+        SoundFX.playBubble(440);
+        SpeechEngine.speak(currentBuilderItem.word);
+      }
+    }
+
+    /* =========================================================================
+       11. ВКЛАДКА 4: «МІЙ АКВАРІУМ» (ЖИВИЙ ПІДВОДНИЙ СВІТ + СОНАР ДЕЛЬФІНА)
+       ========================================================================= */
+    const cachedCreatureImages = {};
+    let aquariumEntities = [];
+    let aquariumBubbles = [];
+    let aquariumSeaweeds = [];
+    let aquariumCorals = [];
+    let canvasWidth = 800;
+    let canvasHeight = 420;
+    let calloutTimer = null;
+
+    function preloadCreatureImages() {
+      Object.keys(CREATURE_SVGS).forEach(key => {
+        const img = new Image();
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(CREATURE_SVGS[key]);
+        cachedCreatureImages[key] = img;
+      });
+    }
+
+    function initAquariumEnvironment() {
+      aquariumBubbles = Array.from({ length: 24 }, () => ({
+        x: Math.random() * 1000,
+        y: Math.random() * 500,
+        r: 2 + Math.random() * 5,
+        speed: 0.4 + Math.random() * 0.9,
+        wobbleOffset: Math.random() * Math.PI * 2
+      }));
+
+      aquariumSeaweeds = Array.from({ length: 14 }, (_, i) => ({
+        xRatio: (i + 0.5) / 14,
+        height: 45 + Math.random() * 55,
+        color: i % 2 === 0 ? '#10b981' : '#059669',
+        phase: Math.random() * Math.PI * 2
+      }));
+
+      aquariumCorals = [
+        { xRatio: 0.14, color: '#f43f5e', size: 28 },
+        { xRatio: 0.36, color: '#f59e0b', size: 24 },
+        { xRatio: 0.62, color: '#ec4899', size: 30 },
+        { xRatio: 0.86, color: '#a855f7', size: 26 }
+      ];
+
+      syncAquariumEntities();
+    }
+
+    function syncAquariumEntities() {
+      const existingIds = aquariumEntities.map(e => e.id);
+
+      appState.unlockedCreatures.forEach(creatureId => {
+        if (!existingIds.includes(creatureId)) {
+          const spec = AQUARIUM_SPECIES.find(s => s.id === creatureId);
+          if (spec) {
+            aquariumEntities.push({
+              ...spec,
+              x: 80 + Math.random() * Math.max(200, canvasWidth - 160),
+              y: spec.bottomDweller
+                ? canvasHeight - 66 - Math.random() * 20
+                : 75 + Math.random() * Math.max(120, canvasHeight - 180),
+              vx: (Math.random() > 0.5 ? 1 : -1) * spec.speed,
+              phase: Math.random() * Math.PI * 2,
+              trickTimer: 0,
+              trickType: 'spin',
+              boostMultiplier: 1
+            });
+          }
+        }
+      });
+
+      const countEl = document.getElementById('aquariumCountText');
+      if (countEl) countEl.textContent = `${aquariumEntities.length} / ${AQUARIUM_SPECIES.length}`;
+      renderAquariumCollectionBar();
+    }
+
+    function renderAquariumCollectionBar() {
+      const bar = document.getElementById('aquariumCollectionBar');
+      if (!bar) return;
+
+      bar.innerHTML = AQUARIUM_SPECIES.map(spec => {
+        const unlocked = appState.unlockedCreatures.includes(spec.id);
+        if (unlocked) {
+          return `
+            <button onclick="triggerAquariumCreatureById('${spec.id}')" class="btn-3d shrink-0 w-24 sm:w-28 rounded-2xl p-2 bg-gradient-to-b from-sky-400/50 to-sky-800/80 border-2 border-cyan-300/60 flex flex-col items-center text-center">
+              <div class="w-12 h-10 sm:w-14 sm:h-12 flex items-center justify-center">${CREATURE_SVGS[spec.id]}</div>
+              <span class="text-xs font-black text-amber-300 mt-1">${spec.letter}</span>
+              <span class="text-[11px] font-extrabold text-white truncate w-full">${spec.name}</span>
+            </button>
+          `;
+        } else {
+          return `
+            <div class="shrink-0 w-24 sm:w-28 rounded-2xl p-2 bg-sky-950/60 border-2 border-dashed border-cyan-400/25 flex flex-col items-center justify-center text-center opacity-60">
+              <div class="w-12 h-10 sm:w-14 sm:h-12 flex items-center justify-center brightness-0 invert opacity-25">${CREATURE_SVGS[spec.id]}</div>
+              <span class="text-xs font-black text-cyan-300/50 mt-1">?</span>
+              <span class="text-[11px] font-bold text-cyan-300/50">Ще сховався</span>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    function triggerAquariumCreatureById(id) {
+      const entity = aquariumEntities.find(e => e.id === id);
+      if (entity) {
+        activateCreatureTrick(entity);
+      }
+    }
+
+    function activateCreatureTrick(entity) {
+      SoundFX.playDolphinSonar();
+      entity.trickTimer = 1.0;
+      entity.trickType = Math.random() > 0.5 ? 'spin' : 'jump';
+      entity.boostMultiplier = 2.6;
+
+      for (let i = 0; i < 12; i++) {
+        aquariumBubbles.push({
+          x: entity.x + (Math.random() - 0.5) * 44,
+          y: entity.y + (Math.random() - 0.5) * 24,
+          r: 3 + Math.random() * 5.5,
+          speed: 1.2 + Math.random() * 1.4,
+          wobbleOffset: Math.random() * Math.PI * 2
+        });
+      }
+
+      const callout = document.getElementById('aquariumCallout');
+      callout.textContent = `✨ ${entity.letter} — ${entity.name}!`;
+      callout.classList.remove('opacity-0', 'scale-90');
+      callout.classList.add('opacity-100', 'scale-100');
+
+      clearTimeout(calloutTimer);
+      calloutTimer = setTimeout(() => {
+        callout.classList.remove('opacity-100', 'scale-100');
+        callout.classList.add('opacity-0', 'scale-90');
+      }, 2400);
+
+      SpeechEngine.speak(`Привіт! Я — ${entity.name}! Літера ${getLetterSpokenName(entity.letter)}!`);
+    }
+
+    function resizeAquariumCanvas() {
+      const container = document.getElementById('aquariumContainer');
+      const canvas = document.getElementById('aquariumCanvas');
+      if (!container || !canvas) return;
+
+      const rect = container.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvasWidth = rect.width;
+      canvasHeight = rect.height;
+
+      canvas.width = canvasWidth * dpr;
+      canvas.height = canvasHeight * dpr;
+
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      aquariumEntities.forEach(e => {
+        if (e.x > canvasWidth - 50) e.x = canvasWidth - 60;
+        if (e.bottomDweller) {
+          e.y = canvasHeight - 62;
+        } else if (e.y > canvasHeight - 90) {
+          e.y = canvasHeight - 110;
+        }
+      });
+    }
+
+    function setupAquariumInteractions() {
+      const canvas = document.getElementById('aquariumCanvas');
+
+      const handlePointer = (clientX, clientY) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+
+        let hitEntity = null;
+        for (let i = aquariumEntities.length - 1; i >= 0; i--) {
+          const e = aquariumEntities[i];
+          const dist = Math.hypot(e.x - x, e.y - y);
+          if (dist < 62 * e.scale) {
+            hitEntity = e;
+            break;
+          }
+        }
+
+        if (hitEntity) {
+          activateCreatureTrick(hitEntity);
+        } else {
+          SoundFX.playBubble(430);
+          for (let i = 0; i < 8; i++) {
+            aquariumBubbles.push({
+              x: x + (Math.random() - 0.5) * 26,
+              y: y + (Math.random() - 0.5) * 26,
+              r: 2.5 + Math.random() * 4.5,
+              speed: 0.9 + Math.random() * 1.1,
+              wobbleOffset: Math.random() * Math.PI * 2
+            });
+          }
+        }
+      };
+
+      canvas.addEventListener('click', (e) => handlePointer(e.clientX, e.clientY));
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) {
+          handlePointer(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+    }
+
+    let lastFrameTime = 0;
+    function animateAquarium(timestamp) {
+      requestAnimationFrame(animateAquarium);
+      if (currentTab !== 'aquarium') return;
+
+      const dt = Math.min((timestamp - lastFrameTime) / 1000, 0.05) || 0.016;
+      lastFrameTime = timestamp;
+
+      const canvas = document.getElementById('aquariumCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Водний градієнт
+      const waterGrad = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+      waterGrad.addColorStop(0, '#06b6d4');
+      waterGrad.addColorStop(0.5, '#0284c7');
+      waterGrad.addColorStop(1, '#082f49');
+      ctx.fillStyle = waterGrad;
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+      // 2. Сонячні промені зверху
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+      for (let i = 0; i < 4; i++) {
+        const beamX = (canvasWidth * 0.15) + i * (canvasWidth * 0.24) + Math.sin(timestamp * 0.0008 + i) * 20;
+        ctx.beginPath();
+        ctx.moveTo(beamX - 25, 0);
+        ctx.lineTo(beamX + 35, 0);
+        ctx.lineTo(beamX + 95, canvasHeight * 0.8);
+        ctx.lineTo(beamX - 65, canvasHeight * 0.8);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // 3. Корали на дні
+      aquariumCorals.forEach(c => {
+        const cx = c.xRatio * canvasWidth;
+        const cy = canvasHeight - 30;
+        ctx.strokeStyle = c.color;
+        ctx.lineWidth = 7;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx, cy - c.size);
+        ctx.moveTo(cx, cy - c.size * 0.5);
+        ctx.lineTo(cx - c.size * 0.45, cy - c.size * 0.85);
+        ctx.moveTo(cx, cy - c.size * 0.6);
+        ctx.lineTo(cx + c.size * 0.45, cy - c.size * 0.9);
+        ctx.stroke();
+      });
+
+      // 4. Піщане дно та водорості
+      const sandY = canvasHeight - 34;
+      ctx.fillStyle = '#eab308';
+      ctx.beginPath();
+      ctx.moveTo(0, sandY);
+      ctx.quadraticCurveTo(canvasWidth * 0.3, sandY - 12, canvasWidth * 0.6, sandY + 4);
+      ctx.quadraticCurveTo(canvasWidth * 0.85, sandY + 12, canvasWidth, sandY - 4);
+      ctx.lineTo(canvasWidth, canvasHeight);
+      ctx.lineTo(0, canvasHeight);
+      ctx.closePath();
+      ctx.fill();
+
+      aquariumSeaweeds.forEach(sw => {
+        const baseX = sw.xRatio * canvasWidth;
+        const sway = Math.sin(timestamp * 0.0022 + sw.phase) * 14;
+        ctx.strokeStyle = sw.color;
+        ctx.lineWidth = 7;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(baseX, canvasHeight - 24);
+        ctx.quadraticCurveTo(baseX + sway, canvasHeight - 24 - sw.height * 0.5, baseX + sway * 1.3, canvasHeight - 24 - sw.height);
+        ctx.stroke();
+      });
+
+      // 5. Бульбашки
+      for (let i = aquariumBubbles.length - 1; i >= 0; i--) {
+        const b = aquariumBubbles[i];
+        b.y -= b.speed;
+        const bx = b.x + Math.sin(timestamp * 0.003 + b.wobbleOffset) * 4;
+
+        if (b.y < -15) {
+          if (aquariumBubbles.length > 26) {
+            aquariumBubbles.splice(i, 1);
+            continue;
+          } else {
+            b.y = canvasHeight - 30;
+            b.x = Math.random() * canvasWidth;
+          }
+        }
+
+        ctx.beginPath();
+        ctx.arc(bx, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(224, 242, 254, 0.38)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.68)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+
+      // 6. Плаваючі морські мешканці
+      aquariumEntities.forEach(entity => {
+        if (entity.boostMultiplier > 1) {
+          entity.boostMultiplier = Math.max(1, entity.boostMultiplier - dt * 1.4);
+        }
+
+        entity.x += entity.vx * entity.boostMultiplier;
+
+        const margin = 55;
+        if (entity.x > canvasWidth - margin) {
+          entity.x = canvasWidth - margin;
+          entity.vx = -Math.abs(entity.vx);
+        } else if (entity.x < margin) {
+          entity.x = margin;
+          entity.vx = Math.abs(entity.vx);
+        }
+
+        const bobOffset = entity.bottomDweller
+          ? Math.sin(timestamp * 0.004 + entity.phase) * 3
+          : Math.sin(timestamp * 0.0025 + entity.phase) * 14;
+
+        let trickJumpY = 0;
+        let trickRotation = 0;
+
+        if (entity.trickTimer > 0) {
+          entity.trickTimer = Math.max(0, entity.trickTimer - dt);
+          const progress = 1 - entity.trickTimer;
+          if (entity.trickType === 'spin') {
+            trickRotation = progress * Math.PI * 2;
+          } else {
+            trickJumpY = -Math.sin(progress * Math.PI) * 38;
+          }
+        }
+
+        const img = cachedCreatureImages[entity.id];
+        if (img && img.complete) {
+          const drawW = 104 * entity.scale;
+          const drawH = 82 * entity.scale;
+
+          ctx.save();
+          ctx.translate(entity.x, entity.y + bobOffset + trickJumpY);
+
+          if (entity.vx < 0) {
+            ctx.scale(-1, 1);
+          }
+
+          ctx.rotate(trickRotation + Math.sin(timestamp * 0.003 + entity.phase) * 0.06);
+          ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+          ctx.restore();
+        }
+      });
+    }
+
+    /* =========================================================================
+       12. ФОНОВІ БУЛЬБАШКИ, РОЗБЛОКУВАННЯ АУДІО ТА СКИДАННЯ ПРОГРЕСУ
+       ========================================================================= */
+    function createBackgroundBubbles() {
+      const container = document.getElementById('bgBubbles');
+      for (let i = 0; i < 16; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble-particle';
+        const size = 10 + Math.random() * 24;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.left = `${Math.random() * 100}%`;
+        bubble.style.animationDuration = `${8 + Math.random() * 10}s`;
+        bubble.style.animationDelay = `${Math.random() * 8}s`;
+        container.appendChild(bubble);
+      }
+    }
+
+    /* Розблокування AudioContext та speechSynthesis при найпершому дотику до сторінки */
+    function setupGlobalAudioUnlock() {
+      const unlockOnce = () => {
+        SoundFX.unlock();
+        if ('speechSynthesis' in window) {
+          try {
+            if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+            window.speechSynthesis.getVoices();
+          } catch (e) {}
+        }
+      };
+      window.addEventListener('pointerdown', unlockOnce, { once: true, capture: true });
+      window.addEventListener('touchstart', unlockOnce, { once: true, capture: true });
+      window.addEventListener('keydown', unlockOnce, { once: true, capture: true });
+    }
+
+    function askResetProgress() {
+      const controls = document.getElementById('resetControls');
+      controls.innerHTML = `
+        <span class="text-amber-200 font-bold mr-2">Очистити всі зірочки та перлини?</span>
+        <button onclick="confirmResetProgress()" class="bg-rose-500 text-white font-bold px-2.5 py-1 rounded-lg mr-1">Так</button>
+        <button onclick="cancelResetProgress()" class="bg-sky-700 text-white font-bold px-2.5 py-1 rounded-lg">Ні</button>
+      `;
+    }
+
+    function cancelResetProgress() {
+      document.getElementById('resetControls').innerHTML = `
+        <button onclick="askResetProgress()" class="underline hover:text-white transition">Почати експедицію спочатку</button>
+      `;
+    }
+
+    function confirmResetProgress() {
+      appState.learnedLetters = [];
+      appState.unlockedCreatures = ['dolphin'];
+      appState.pearls = 0;
+      aquariumEntities = [];
+      saveProgress();
+      syncAquariumEntities();
+      renderAlphabetGrid();
+      cancelResetProgress();
+      showToast('Нова підводна експедиція розпочата!', '🚢');
+    }
+
+    /* =========================================================================
+       13. ІНІЦІАЛІЗАЦІЯ ДОДАТКА ПІСЛЯ ЗАВАНТАЖЕННЯ
+       ========================================================================= */
+    window.onload = function () {
+      loadProgress();
+      setupGlobalAudioUnlock();
+      SpeechEngine.init();
+      preloadCreatureImages();
+      createBackgroundBubbles();
+      initAquariumEnvironment();
+      setupAquariumInteractions();
+
+      updateHeaderUI();
+      renderAlphabetGrid();
+
+      window.addEventListener('resize', () => {
+        if (currentTab === 'aquarium') {
+          resizeAquariumCanvas();
+        }
+      });
+
+      requestAnimationFrame(animateAquarium);
+    };
+  </script>
+</body>
+</html>
