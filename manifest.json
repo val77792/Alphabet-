@@ -1,0 +1,16 @@
+{
+  "name": "Морська Абетка: Підводна Експедиція",
+  "short_name": "Морська Абетка",
+  "start_url": "/Alphabet-/",
+  "scope": "/Alphabet-/",
+  "display": "standalone",
+  "background_color": "#082f49",
+  "theme_color": "#0e4d73",
+  "icons": [
+    {
+      "src": "icon-512.jpg",
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ]
+}
